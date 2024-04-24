@@ -38,7 +38,7 @@ inline mat3 Camera3D::RotYAxis()
 inline void Camera3D::Update()
 {
 	vec2 movement_direction = vec2(0, 0);
-	float speed = 2;
+	float speed = 4;
 	float sensitivity = 2;
 	mat3 RotY =
 	{
@@ -56,13 +56,13 @@ inline void Camera3D::Update()
 
 	//Camera movement windows users only
 	if (GetAsyncKeyState('W') & 0x8000)
-		movement_direction += vec2(Direction.x, Direction.z);
+		movement_direction += vec2(-sin(view.x), cos(view.x));
 	if (GetAsyncKeyState('A') & 0x8000)
 		movement_direction -= vec2(cos(view.x), sin(view.x));
 	if (GetAsyncKeyState('D') & 0x8000)
 		movement_direction += vec2(cos(view.x), sin(view.x));
 	if (GetAsyncKeyState('S') & 0x8000)
-		movement_direction -= vec2(Direction.x, Direction.z);;
+		movement_direction -= vec2(-sin(view.x), cos(view.x));
 	if (movement_direction.mag() > 1)
 		movement_direction = movement_direction.Normalize();
 	if (GetAsyncKeyState('C') & 0x8000)

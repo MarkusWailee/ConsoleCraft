@@ -20,21 +20,19 @@ int main()
 
 	float time = 0;
 
+	int map_length = 3;
 
-	ChunkManager n(2);
+	ChunkManager n(map_length);
+	for (int chunk_y = 0; chunk_y < map_length; chunk_y++)
+		for (int chunk_z = 0; chunk_z < map_length; chunk_z++)
+			for (int chunk_x = 0; chunk_x < map_length; chunk_x++)
+				n.AddChunk(chunk_x, chunk_y, chunk_z);
 
-	n.AddChunk(0, 0, 0);
+	for (int chunk_y = 0; chunk_y < map_length; chunk_y++)
+		for (int chunk_z = 0; chunk_z < map_length; chunk_z++)
+			for (int chunk_x = 0; chunk_x < map_length; chunk_x++)
+				n.MeshChunk(chunk_x, chunk_y, chunk_z);
 
-	n.AddChunk(1, 0, 0);
-
-
-	const vec3 RIGHT_FACE[] =
-	{
-		vec3(0.5,-0.5,-0.5),
-		vec3(0.5,-0.5,0.5),
-		vec3(0.5,0.5,0.5),
-		vec3(0.5,0.5,-0.5)
-	};
 	while (true)
 	{
 		DeltaTime::HandleTime();
