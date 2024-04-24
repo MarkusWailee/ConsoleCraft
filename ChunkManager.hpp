@@ -32,7 +32,7 @@ char tex_H[] = //16x16
 	G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,
 };
 
-const int CHUNK_LENGTH = 4;
+const int CHUNK_LENGTH = 16;
 const int CHUNK_SIZE = CHUNK_LENGTH * CHUNK_LENGTH * CHUNK_LENGTH;
 
 struct Block

@@ -8,7 +8,7 @@
 int main()
 {
 	//window initialization
-	Terminal3D::Init(500,280, ']');
+	Terminal3D::Init(500,280, 'G');
 
 
 	//DeltaTime::SetTargetFPS(60);
@@ -18,7 +18,7 @@ int main()
 
 	float time = 0;
 
-	int map_length = 10;
+	int map_length = 5;
 
 	ChunkManager n(map_length);
 	for (int chunk_y = 0; chunk_y < map_length; chunk_y++)
@@ -30,6 +30,7 @@ int main()
 		for (int chunk_z = 0; chunk_z < map_length; chunk_z++)
 			for (int chunk_x = 0; chunk_x < map_length; chunk_x++)
 				n.MeshChunk(chunk_x, chunk_y, chunk_z);
+
 
 	while (true)
 	{
@@ -44,9 +45,6 @@ int main()
 		//Demo
 		n.Render(camera);
 		
-		//rendering to the string
-
-
 
 		Terminal3D::Render();// <- couts the string
 		Terminal3D::ClearBuffer();

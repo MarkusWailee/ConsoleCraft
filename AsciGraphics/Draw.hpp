@@ -11,7 +11,7 @@ private:
 	Draw() {};
 	static float z_formula(float z) 
 	{
-		float far = 50;
+		float far = 200;
 		float near = 1;
 
 		return (far + near) / (far - near) + (1 / z) * ((-2 * far * near) / (far - near));
@@ -59,6 +59,12 @@ inline void Draw::Triangle_uv(vec3 p1, vec3 p2, vec3 p3, vec2* uv, char tex_code
 	ASCI_Texture& tex = Get().textures[tex_code];
 	if (tex.data == NULL)return;
 
+	//BackFace Culling
+	vec2 A = vec2(p2.x, p2.y) - vec2(p1.x, p1.y);
+	vec2 A_normal = vec2(-A.y, A.x);
+	vec2 B = vec2(p3.x, p3.y) - vec2(p1.x, p1.y);
+	if (A_normal.dot(B) < 0)return;
+
 
 	//Normalizing coordinates from -1 to 1 in x and y axis
 	static float half_screen_w = (Get().screen_w / 2);
@@ -84,9 +90,9 @@ inline void Draw::Triangle_uv(vec3 p1, vec3 p2, vec3 p3, vec2* uv, char tex_code
 	if (min_y < 0) min_y = 0;
 	if (max_x > Terminal3D::GetScreenWidth()) max_x = Terminal3D::GetScreenWidth();
 	if (max_y > Terminal3D::GetScreenHeight()) max_y = Terminal3D::GetScreenHeight();
-	for (int posY = min_y-1; posY <= max_y; posY++)
+	for (int posY = min_y; posY <= max_y; posY++)
 	{
-		for (int posX = min_x-1; posX <= max_x; posX++)
+		for (int posX = min_x; posX <= max_x; posX++)
 		{
 			float w1, w2, w3;
 			w2 = ((float(posY) - p1.y) * (p3.x - p1.x) - (float(posX) - p1.x) * (p3.y - p1.y)) /
