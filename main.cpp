@@ -8,7 +8,7 @@
 int main()
 {
 	//window initialization
-	Terminal3D::Init(500,280, '.');
+	Terminal3D::Init(500,280, ' ');
 
 	//DeltaTime::SetTargetFPS(60);
 
@@ -21,9 +21,11 @@ int main()
 	float time = 0;
 
 
-	ChunkManager n(1);
+	ChunkManager n(2);
 
 	n.AddChunk(0, 0, 0);
+
+	n.AddChunk(1, 0, 0);
 
 
 	const vec3 RIGHT_FACE[] =

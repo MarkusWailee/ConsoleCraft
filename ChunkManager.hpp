@@ -9,7 +9,30 @@
 
 
 
-const int CHUNK_LENGTH = 16;
+char _ = '.';
+char O = ']';
+char G = '-';
+char tex_H[] = //16x16
+{
+	G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,
+	G,_,_,_,_,_,_,_,_,_,_,_,_,_,_,G,
+	G,_,_,_,_,_,_,_,_,_,_,_,_,_,_,G,
+	G,_,_,_,_,_,_,_,_,_,_,_,_,_,_,G,
+	G,_,_,_,_,_,_,_,_,_,_,_,_,_,_,G,
+	G,_,_,_,_,_,_,_,_,_,_,_,_,_,_,G,
+	G,_,_,_,_,_,_,_,_,_,_,_,_,_,_,G,
+	G,_,_,_,_,_,_,_,_,_,_,_,_,_,_,G,
+	G,_,_,_,_,_,_,_,_,_,_,_,_,_,_,G,
+	G,_,_,_,_,_,_,_,_,_,_,_,_,_,_,G,
+	G,_,_,_,_,_,_,_,_,_,_,_,_,_,_,G,
+	G,_,_,_,_,_,_,_,_,_,_,_,_,_,_,G,
+	G,_,_,_,_,_,_,_,_,_,_,_,_,_,_,G,
+	G,_,_,_,_,_,_,_,_,_,_,_,_,_,_,G,
+	G,_,_,_,_,_,_,_,_,_,_,_,_,_,_,G,
+	G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,
+};
+
+const int CHUNK_LENGTH = 4;
 const int CHUNK_SIZE = CHUNK_LENGTH * CHUNK_LENGTH * CHUNK_LENGTH;
 
 struct Block
@@ -44,7 +67,18 @@ class ChunkManager
 	int map_length = 0;
 	Chunk* chunks = NULL;
 public:
-	ChunkManager(int distance) : map_length(distance), map_size(distance* distance* distance) , chunks(new Chunk[map_size]) {}
+	ChunkManager(int distance) : map_length(distance), map_size(distance* distance* distance) , chunks(new Chunk[map_size]) 
+	{
+		Terminal3D::Add_Texture(1, tex_H, 16, 16);
+		for (int i = 0; i < 16 * 16 - 3; i += rand() % 3 + 1)
+		{
+			int x = i % 16;
+			int y = i / 16;
+			if(x>0 && x< 16 && y>0 && y < 15)
+				tex_H[i] = ',';
+
+		}
+	}
 	~ChunkManager() { delete[] chunks; }
 	unsigned int HashFunction(int chunk_x, int chunk_y, int chunk_z);
 	void AddChunk(int chunk_x, int chunk_y, int chunk_z);
@@ -106,7 +140,8 @@ void ChunkManager::Render(Camera3D camera)
 							Cube::data[i * 4 + 2],
 							Cube::data[i * 4 + 3]
 						};
-						Draw3D::Plain(vec3(x + block_x, y + block_y, z + block_z), vertices, 'p', camera);
+						std::string b = ".]#-*$";
+						Draw3D::Plain_uv(vec3(x + block_x, y + block_y, z + block_z), vertices, 1, camera);
 					}
 	
 

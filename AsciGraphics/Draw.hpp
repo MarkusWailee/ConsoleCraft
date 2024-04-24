@@ -138,7 +138,7 @@ inline void Draw::Triangle(vec3 p1, vec3 p2, vec3 p3, char c) //RASTERIZER using
 			w1 = 1 - w2 - w3;
 			float interpolated_z = (p1.z * w1 + p2.z * w2 + p3.z * w3);
 			vec3 pixel_position = vec3(posX, posY, z_formula(interpolated_z));
-			if (!(w1 >= -0 && w1 <= 1 && w2 >= 0 && w2 <= 1 && w3 >= 0 && w3 <= 1))continue;
+			if (!(w1 >= -0 && w1 <= 1 && w2 >= -0 && w2 <= 1 && w3 >= -0 && w3 <= 1))continue;
 			Get().SetPixel(pixel_position, c);
 		}
 	}
