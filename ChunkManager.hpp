@@ -88,21 +88,27 @@ void ChunkManager::Render(Camera3D camera)
 		Chunk& chunk = chunks[i];
 		if (chunk.data == NULL) continue;
 
-		int x = chunk.chunk_x * CHUNK_LENGTH;
-		int y = chunk.chunk_y * CHUNK_LENGTH;
-		int z = chunk.chunk_z * CHUNK_LENGTH;
+		int block_x = chunk.chunk_x * CHUNK_LENGTH;
+		int block_y = chunk.chunk_y * CHUNK_LENGTH;
+		int block_z = chunk.chunk_z * CHUNK_LENGTH;
 
-		for (int i = 0; i < 6; i++)
-		{
-			vec3 vertices[] =
-			{
-				Cube::data[i * 4 + 0],
-				Cube::data[i * 4 + 1],
-				Cube::data[i * 4 + 2],
-				Cube::data[i * 4 + 3]
-			};
-			Draw3D::Plain(vec3(x, y, z), vertices, 'p', camera);
-		}
+
+
+		for (int y = 0; y < CHUNK_LENGTH; y++)
+			for (int z = 0; z < CHUNK_LENGTH; z++)
+				for (int x = 0; x < CHUNK_LENGTH; x++)
+					for (int i = 0; i < 6; i++)
+					{
+						vec3 vertices[] =
+						{
+							Cube::data[i * 4 + 0],
+							Cube::data[i * 4 + 1],
+							Cube::data[i * 4 + 2],
+							Cube::data[i * 4 + 3]
+						};
+						Draw3D::Plain(vec3(x + block_x, y + block_y, z + block_z), vertices, 'p', camera);
+					}
+	
 
 	}
 }
