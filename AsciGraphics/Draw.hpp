@@ -9,7 +9,13 @@ class Draw : Terminal3D //friend
 {
 private:
 	Draw() {};
-	static float z_formula(float z) {return z / (z + 0.1);}//non linear curve for z_buffer
+	static float z_formula(float z) 
+	{
+		float far = 50;
+		float near = 1;
+
+		return (far + near) / (far - near) + (1 / z) * ((-2 * far * near) / (far - near));
+	}//non linear curve for z_buffer
 
 public:
 	//2D functions
@@ -78,17 +84,18 @@ inline void Draw::Triangle_uv(vec3 p1, vec3 p2, vec3 p3, vec2* uv, char tex_code
 	if (min_y < 0) min_y = 0;
 	if (max_x > Terminal3D::GetScreenWidth()) max_x = Terminal3D::GetScreenWidth();
 	if (max_y > Terminal3D::GetScreenHeight()) max_y = Terminal3D::GetScreenHeight();
-	for (int posY = min_y; posY < max_y; posY++)
+	for (int posY = min_y-1; posY <= max_y; posY++)
 	{
-		for (int posX = min_x; posX < max_x; posX++)
+		for (int posX = min_x-1; posX <= max_x; posX++)
 		{
 			float w1, w2, w3;
-			w2 = ((posY - p1.y) * (p3.x - p1.x) - (posX - p1.x) * (p3.y - p1.y)) /
+			w2 = ((float(posY) - p1.y) * (p3.x - p1.x) - (float(posX) - p1.x) * (p3.y - p1.y)) /
 				((p2.y - p1.y) * (p3.x - p1.x) - (p2.x - p1.x) * (p3.y - p1.y));
-			w3 = ((posY - p2.y) * (p1.x - p2.x) - (posX - p2.x) * (p1.y - p2.y)) /
+			w3 = ((float(posY) - p2.y) * (p1.x - p2.x) - (float(posX) - p2.x) * (p1.y - p2.y)) /
 				((p3.y - p2.y) * (p1.x - p2.x) - (p3.x - p2.x) * (p1.y - p2.y));
 			w1 = 1 - w2 - w3;
 
+			//float interpolated_z = (z_formula(p1.z) * w1 + z_formula(p2.z) * w2 + z_formula(p3.z) * w3);
 			float interpolated_z = (p1.z * w1 + p2.z * w2 + p3.z * w3);
 			vec3 pixel_position = vec3(posX, posY, z_formula(interpolated_z));//adds non linear z_buffer for precision
 
@@ -97,7 +104,7 @@ inline void Draw::Triangle_uv(vec3 p1, vec3 p2, vec3 p3, vec2* uv, char tex_code
 			vec2 uv_cord = (uv[0] * w1 + uv[1] * w2 + uv[2] * w3)/ inv_z;
 			int uv_x = uv_cord.x * tex.width;
 			int uv_y = uv_cord.y * tex.height;
-			if (!(w1 >= 0 && w1 <= 1 && w2 >= -0 && w2 <= 1 && w3 >= -0 && w3 <= 1))continue;
+			if (!(w1 >= -0 && w1 <= 1 && w2 >= -0 && w2 <= 1 && w3 >= -0 && w3 <= 1 ))continue;
 			Get().SetPixel(pixel_position, tex.GetCoord(uv_x,uv_y));
 		}
 	}

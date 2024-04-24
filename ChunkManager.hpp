@@ -233,6 +233,7 @@ void ChunkManager::Render(Camera3D camera)
 					{
 						Block& block = chunk.GetBlock_r(x, y, z);
 						if (block.face[i] == 0 || block.block_type == 0) continue;
+						vec3 position = vec3(x + block_x, y + block_y, z + block_z);
 						vec3 vertices[] =
 						{
 							Cube::data[i * 4 + 0],
@@ -240,8 +241,7 @@ void ChunkManager::Render(Camera3D camera)
 							Cube::data[i * 4 + 2],
 							Cube::data[i * 4 + 3]
 						};
-						std::string b = ".]#-*$";
-						Draw3D::Plain_uv(vec3(x + block_x, y + block_y, z + block_z), vertices, 1, camera);
+						Draw3D::Plain_uv(position, vertices, 1, camera);
 					}
 	
 

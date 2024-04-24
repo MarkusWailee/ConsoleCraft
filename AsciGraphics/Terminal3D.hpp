@@ -77,7 +77,7 @@ inline void Terminal3D::SetPixel(vec3 position, char character)
 
 	int z_buffer_offset = x + y * Get().screen_w;//I HAD THIS SET TO "screen_h". F#%& THAT TOOK 2 hours to figure out
 
-	if (position.z > Get().z_front_buffer[z_buffer_offset] || position.z <0)return;
+	if (position.z > Get().z_front_buffer[z_buffer_offset] || position.z<-1)return;
 	Get().z_front_buffer[z_buffer_offset] = position.z;
 	int front_buffer_offset1 = x * 2 + y * (Get().SCREEN_CHAR_WIDTH);
 	int front_buffer_offset2 = x * 2 + 1 + y * (Get().SCREEN_CHAR_WIDTH);

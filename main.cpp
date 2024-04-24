@@ -8,19 +8,17 @@
 int main()
 {
 	//window initialization
-	Terminal3D::Init(500,280, ' ');
+	Terminal3D::Init(500,280, ']');
+
 
 	//DeltaTime::SetTargetFPS(60);
-
-	float x = 40;
-	float y = 0;
-
 	Camera3D camera;
+
 
 
 	float time = 0;
 
-	int map_length = 3;
+	int map_length = 10;
 
 	ChunkManager n(map_length);
 	for (int chunk_y = 0; chunk_y < map_length; chunk_y++)
