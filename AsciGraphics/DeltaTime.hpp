@@ -14,6 +14,8 @@ public:
 	float GetFrameTime() { return deltaTime; }
 	void SetTargetFPS(float FPS_TARGET);
 private:
+	std::chrono::time_point<std::chrono::high_resolution_clock> start;
+	int fps_counter = 0;
 	float dt_target = 0;
 	float deltaTime = 0;
 	float FPS = 0;
@@ -22,14 +24,13 @@ private:
 
 inline void DeltaTime::HandleTime()
 {
-	static auto start = timer.now();
+	//static auto start = timer.now();
 	while (std::chrono::duration_cast<ms>(timer.now() - start).count() < dt_target) {}
 	deltaTime = std::chrono::duration_cast<ms>(timer.now() - start).count() * 0.001;
 	start = timer.now();
 }
 inline void DeltaTime::ShowFPS()
 {
-	static int fps_counter = 0;
 	fps_counter++;
 	FPS += 1 / deltaTime;
 	if (fps_counter >= 100)

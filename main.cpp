@@ -57,7 +57,6 @@ int main()
 		Render_Time.HandleTime();
 		Render_Time.ShowFPS();
 
-
 		n.Render(camera);
 		Draw::Circle(vec2(Terminal3D::GetScreenWidth()/2, Terminal3D::GetScreenHeight()/2), 1, '#');
 
