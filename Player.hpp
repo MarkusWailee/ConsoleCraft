@@ -15,10 +15,10 @@ const vec3 vertices[]
 struct Player : Camera3D
 {
 
-	void CastRay(ChunkManager& world);
+	void CastRay(ChunkManager& world, float FrameTime);
 	void Controls() {};
 };
-inline void Player::CastRay(ChunkManager& world)
+inline void Player::CastRay(ChunkManager& world, float FrameTime)
 {
 	vec3 p = position + vec3(0.5, 0.5, 0.5);
 	vec3 v = Direction;
@@ -46,13 +46,15 @@ inline void Player::CastRay(ChunkManager& world)
 			Cube::data[i * 4 + 3]
 		};
 		vec3 pos = p - Direction * 0.02;
-		Draw3D::Plain(vec3(int(pos.x), int(pos.y), int(pos.z)), vertices, ']', Camera3D(position, view, Direction));
+		//Draw3D::Plain(vec3(int(pos.x), int(pos.y), int(pos.z)), vertices, ']', Camera3D(position, view, Direction));
 	}
 
 	static float place_time = 0;
-	place_time += DeltaTime::GetFrameTime();
+	place_time += FrameTime;
 
-	if (GetAsyncKeyState(13) & 0x8000 && place_time > 0.1)
+
+	//Place Blocks
+	if (GetAsyncKeyState(13) & 0x8000 && place_time > 0.2)
 	{
 		p -= Direction * 0.02;
 		if (world.does_chunk_exist(p.x, p.y, p.z))
@@ -62,7 +64,9 @@ inline void Player::CastRay(ChunkManager& world)
 		}
 		place_time = 0;
 	}
-	if (GetAsyncKeyState(8) & 0x8000)
+
+	//Break Blocks
+	if (GetAsyncKeyState(8) & 0x8000 && place_time > 0.2)
 	{
 		p += Direction * 0.02;
 		if (world.does_chunk_exist(p.x, p.y, p.z))
@@ -70,6 +74,7 @@ inline void Player::CastRay(ChunkManager& world)
 			world.GetBlock_r(int(p.x), int(p.y), int(p.z)).block_type = 0;
 			world.MeshChunk(p.x / CHUNK_LENGTH, p.y / CHUNK_LENGTH, p.z / CHUNK_LENGTH);
 		}
+		place_time = 0;
 	}
 
 }

@@ -14,7 +14,7 @@ struct Camera3D
 	Camera3D(vec3 position, vec2 view, vec3 Direction) : position(position), view(view), Direction(Direction){}
 	mat3 RotXAxis();
 	mat3 RotYAxis();
-	void FreeCam();
+	void FreeCam(float FrameTime);
 };
 
 inline mat3 Camera3D::RotXAxis()
@@ -36,7 +36,7 @@ inline mat3 Camera3D::RotYAxis()
 	};
 }
 
-inline void Camera3D::FreeCam()
+inline void Camera3D::FreeCam(float FrameTime)
 {
 	vec2 movement_direction = vec2(0, 0);
 	float speed = 5;
@@ -67,16 +67,16 @@ inline void Camera3D::FreeCam()
 	if (movement_direction.mag() > 1)
 		movement_direction = movement_direction.Normalize();
 	if (GetAsyncKeyState('C') & 0x8000)
-		position.y += -speed * DeltaTime::GetFrameTime();
+		position.y += -speed * FrameTime;
 	if (GetAsyncKeyState(' ') & 0x8000)
-		position.y += speed * DeltaTime::GetFrameTime();
+		position.y += speed * FrameTime;
 	if (GetAsyncKeyState(37) & 0x8000)
-		view.x += sensitivity * DeltaTime::GetFrameTime();
+		view.x += sensitivity * FrameTime;
 	if (GetAsyncKeyState(39) & 0x8000)
-		view.x -= sensitivity * DeltaTime::GetFrameTime();
+		view.x -= sensitivity * FrameTime;
 	if (GetAsyncKeyState(40) & 0x8000)
-		view.y -= sensitivity * DeltaTime::GetFrameTime();
+		view.y -= sensitivity * FrameTime;
 	if (GetAsyncKeyState(38) & 0x8000)
-		view.y += sensitivity * DeltaTime::GetFrameTime();
-	position += speed * vec3(movement_direction.x, 0, movement_direction.y) * DeltaTime::GetFrameTime();
+		view.y += sensitivity * FrameTime;
+	position += speed * vec3(movement_direction.x, 0, movement_direction.y) * FrameTime;
 }

@@ -12,7 +12,7 @@ private:
 	static float z_formula(float z) 
 	{
 		float far = 200;
-		float near = 1;
+		float near = 0.1;
 
 		return (far + near) / (far - near) + (1 / z) * ((-2 * far * near) / (far - near));
 	}//non linear curve for z_buffer

@@ -8,7 +8,7 @@
 int main()
 {
 	//window initialization
-	Terminal3D::Init(400,350, ' ');
+	Terminal3D::Init(500,280, ' ');
 
 
 	//DeltaTime::SetTargetFPS(60);
@@ -16,10 +16,9 @@ int main()
 
 
 
-	float time = 0;
 
+	//Temporary World Generation
 	int map_length = 10;
-
 	ChunkManager n(map_length);
 	for (int chunk_y = 0; chunk_y < map_length; chunk_y++)
 		for (int chunk_z = 0; chunk_z < map_length; chunk_z++)
@@ -31,27 +30,36 @@ int main()
 			for (int chunk_x = 0; chunk_x < map_length; chunk_x++)
 				n.MeshChunk(chunk_x, chunk_y, chunk_z);
 
-	//physics
-	//std::thread([&]
-	//	{
-	//		while (true)
-	//		{
-	//			camera.FreeCam();
-	//			DeltaTime::HandleTime();
-	//		}
-	//	}).detach();
 
-	//Rendering
+
+
+
+
+
+
+
+	//Game Logic
+	std::thread([&]
+	{
+		DeltaTime Game_Time;
+		while (true)
+		{
+			Game_Time.HandleTime();
+			camera.FreeCam(Game_Time.GetFrameTime());
+			camera.CastRay(n, Game_Time.GetFrameTime());
+		}
+	}).detach();
+
+	//Rendering Logic
+	DeltaTime Render_Time;
 	while (true)
 	{
-		DeltaTime::HandleTime();
-		DeltaTime::ShowFPS();
-		camera.FreeCam();
+		Render_Time.HandleTime();
+		Render_Time.ShowFPS();
 
 
 		n.Render(camera);
 		Draw::Circle(vec2(Terminal3D::GetScreenWidth()/2, Terminal3D::GetScreenHeight()/2), 1, '#');
-		camera.CastRay(n);
 
 		Terminal3D::Render();// <- couts the string
 		Terminal3D::ClearBuffer();

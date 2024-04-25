@@ -24,7 +24,7 @@ inline void Draw3D::Plain_uv(vec3 position, const vec3* vertices4, char tex_code
 		vertice = vec3(vertice.x / vertice.z, vertice.y / vertice.z, vertice.z);
 
 		//Temporary fix for rendering -z values
-		if (vertice.z < 0)return;
+		if (vertice.z < 0) return;
 		quad_vertices[i] = vertice;
 	}
 	//Render 2D vertices
