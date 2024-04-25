@@ -83,26 +83,23 @@ public:
 		
 		Terminal3D::Add_Texture(1, tex_H, 16, 16);
 		chunks = new Chunk[map_size];
-		//for (int i = 0; i < 16 * 16 - 3; i += rand() % 3 + 1)
-		//{
-		//	int x = i % 16;
-		//	int y = i / 16;
-		//	if(x>0 && x< 16 && y>0 && y < 15)
-		//		tex_H[i] = ',';
-		//}
 	}
 	~ChunkManager() { delete[] chunks; }
 	unsigned int HashFunction(int chunk_x, int chunk_y, int chunk_z);
 	unsigned char GetBlock(int x, int y, int z);
 	//r for reference
 	Block& GetBlock_r(int x, int y, int z);
-	bool does_chunk_exist(int chunk_x, int chunk_y, int chunk_z);
+	bool does_block_exist(int block_x, int block_y, int block_z);
 	void AddChunk(int chunk_x, int chunk_y, int chunk_z);
 	void MeshChunk(int chunk_x, int chunk_y, int chunk_z);
+	void MeshBlock(int block_x, int block_y, int block_z);
+	void MeshAdjacentBlocks(int block_x, int block_y, int block_z);
+
+	//I use this for raycasting 
 	void Render(Camera3D camera);
 };
 
-inline bool ChunkManager::does_chunk_exist(int block_x, int block_y, int block_z)
+inline bool ChunkManager::does_block_exist(int block_x, int block_y, int block_z)
 {
 	int chunk_x = (block_x / CHUNK_LENGTH) - (block_x % CHUNK_LENGTH != 0 && block_x < 0);
 	int chunk_y = (block_y / CHUNK_LENGTH) - (block_y % CHUNK_LENGTH != 0 && block_y < 0);
@@ -198,34 +195,44 @@ inline void ChunkManager::MeshChunk(int chunk_x, int chunk_y, int chunk_z)
 	for (int y = 0; y < CHUNK_LENGTH; y++)
 		for (int z = 0; z < CHUNK_LENGTH; z++)
 			for (int x = 0; x < CHUNK_LENGTH; x++)
-			{
-				Block& current_block = chunk.GetBlock_r(x, y, z);
+				MeshBlock(block_x + x, block_y + y, block_z + z);
+}
+inline void ChunkManager::MeshBlock(int block_x, int block_y, int block_z)
+{
+	Block& current_block = GetBlock_r(block_x, block_y, block_z);
+	current_block.face[0] = 0;
+	//front
+	if (GetBlock(block_x, block_y, block_z - 1) == 0)
+		current_block.face[0] = 1;
+	//Right
+	current_block.face[1] = 0;
+	if (GetBlock(block_x + 1, block_y, block_z) == 0)
+		current_block.face[1] = 1;
+	//Back
+	current_block.face[2] = 0;
+	if (GetBlock(block_x, block_y, block_z + 1) == 0)
+		current_block.face[2] = 1;
+	//Left
+	current_block.face[3] = 0;
+	if (GetBlock(block_x - 1, block_y, block_z) == 0)
+		current_block.face[3] = 1;
+	//Bottom
+	current_block.face[4] = 0;
+	if (GetBlock(block_x, block_y - 1, block_z) == 0)
+		current_block.face[4] = 1;
+	//Top
+	current_block.face[5] = 0;
+	if (GetBlock(block_x, block_y + 1, block_z) == 0)
+		current_block.face[5] = 1;
+}
 
-				//Front
-				current_block.face[0] = 0;
-				if (GetBlock(block_x + x, block_y + y, block_z + z - 1) == 0)
-					current_block.face[0] = 1;
-				//Right
-				current_block.face[1] = 0;
-				if (GetBlock(block_x + x + 1, block_y + y, block_z + z) == 0)
-					current_block.face[1] = 1;
-				//Back
-				current_block.face[2] = 0;
-				if (GetBlock(block_x + x, block_y + y, block_z + z + 1) == 0)
-					current_block.face[2] = 1;
-				//Left
-				current_block.face[3] = 0;
-				if (GetBlock(block_x + x - 1, block_y + y, block_z + z) == 0)
-					current_block.face[3] = 1;
-				//Bottom
-				current_block.face[4] = 0;
-				if (GetBlock(block_x + x, block_y + y - 1, block_z + z) == 0)
-					current_block.face[4] = 1;
-				//Top
-				current_block.face[5] = 0;
-				if (GetBlock(block_x + x, block_y + y + 1, block_z + z) == 0)
-					current_block.face[5] = 1;
-			}
+inline void ChunkManager::MeshAdjacentBlocks(int block_x, int block_y, int block_z)
+{
+	for(int y = -1; y <= 1; y++)
+		for (int z = -1; z <= 1; z++)
+			for (int x = -1; x <= 1; x++)
+				if(does_block_exist(block_x + x, block_y + y, block_z+z))
+					MeshBlock(block_x+x, block_y+y, block_z+z);
 }
 
 inline void ChunkManager::Render(Camera3D camera)

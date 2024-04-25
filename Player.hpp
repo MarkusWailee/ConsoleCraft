@@ -57,11 +57,12 @@ inline void Player::CastRay(ChunkManager& world, float FrameTime)
 	if (GetAsyncKeyState(13) & 0x8000 && place_time > 0.2)
 	{
 		p -= Direction * 0.02;
-		if (world.does_chunk_exist(p.x, p.y, p.z))
+		if (world.does_block_exist(p.x, p.y, p.z))
 		{
 			world.GetBlock_r(int(p.x), int(p.y), int(p.z)).block_type = 1;
-			world.MeshChunk(p.x / CHUNK_LENGTH, p.y / CHUNK_LENGTH, p.z / CHUNK_LENGTH);
+			world.MeshAdjacentBlocks(p.x, p.y, p.z);
 		}
+
 		place_time = 0;
 	}
 
@@ -69,10 +70,10 @@ inline void Player::CastRay(ChunkManager& world, float FrameTime)
 	if (GetAsyncKeyState(8) & 0x8000 && place_time > 0.2)
 	{
 		p += Direction * 0.02;
-		if (world.does_chunk_exist(p.x, p.y, p.z))
+		if (world.does_block_exist(p.x, p.y, p.z))
 		{
-			world.GetBlock_r(int(p.x), int(p.y), int(p.z)).block_type = 0;
-			world.MeshChunk(p.x / CHUNK_LENGTH, p.y / CHUNK_LENGTH, p.z / CHUNK_LENGTH);
+			world.GetBlock_r(p.x, p.y, p.z).block_type = 0;
+			world.MeshAdjacentBlocks(p.x, p.y, p.z);
 		}
 		place_time = 0;
 	}

@@ -8,7 +8,7 @@
 int main()
 {
 	//window initialization
-	Terminal3D::Init(500,280, ' ');
+	Terminal3D::Init(800,480, ' ');
 
 
 	//DeltaTime::SetTargetFPS(60);
@@ -46,7 +46,7 @@ int main()
 		{
 			Game_Time.HandleTime();
 			camera.FreeCam(Game_Time.GetFrameTime());
-			camera.CastRay(n, Game_Time.GetFrameTime());
+			camera.CastRay(n, Game_Time.GetFrameTime()*10);
 		}
 	}).detach();
 
