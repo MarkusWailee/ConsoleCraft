@@ -96,10 +96,25 @@ public:
 	unsigned char GetBlock(int x, int y, int z);
 	//r for reference
 	Block& GetBlock_r(int x, int y, int z);
+	bool does_chunk_exist(int chunk_x, int chunk_y, int chunk_z);
 	void AddChunk(int chunk_x, int chunk_y, int chunk_z);
 	void MeshChunk(int chunk_x, int chunk_y, int chunk_z);
 	void Render(Camera3D camera);
 };
+
+inline bool ChunkManager::does_chunk_exist(int block_x, int block_y, int block_z)
+{
+	int chunk_x = (block_x / CHUNK_LENGTH) - (block_x % CHUNK_LENGTH != 0 && block_x < 0);
+	int chunk_y = (block_y / CHUNK_LENGTH) - (block_y % CHUNK_LENGTH != 0 && block_y < 0);
+	int chunk_z = (block_z / CHUNK_LENGTH) - (block_z % CHUNK_LENGTH != 0 && block_z < 0);
+	Chunk& chunk = chunks[HashFunction(chunk_x, chunk_y, chunk_z)];
+	if (!(chunk.chunk_x == chunk_x && chunk.chunk_y == chunk_y && chunk.chunk_z == chunk_z))
+	{
+		//return air block. Helps for meshing when the chunk DNE.
+		return 0;
+	}
+	return 1;
+}
 
 //unique identifier for each chunk
 inline unsigned int ChunkManager::HashFunction(int chunk_x, int chunk_y, int chunk_z)
@@ -133,7 +148,7 @@ inline Block& ChunkManager::GetBlock_r(int block_x, int block_y, int block_z)
 	int chunk_z = (block_z / CHUNK_LENGTH) - (block_z % CHUNK_LENGTH != 0 && block_z < 0);
 
 	Chunk& chunk = chunks[HashFunction(chunk_x, chunk_y, chunk_z)];
-	if (chunk.chunk_x == chunk_x && chunk.chunk_y == chunk_y && chunk.chunk_z == chunk_z)
+	if (!(chunk.chunk_x == chunk_x && chunk.chunk_y == chunk_y && chunk.chunk_z == chunk_z))
 	{
 		std::cout << "Incorrect Indexing in GetBlock_r function\n";
 		throw;

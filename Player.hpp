@@ -2,6 +2,7 @@
 #include "AsciGraphics/Camera3D.hpp"
 #include "ChunkManager.hpp"
 #include "CubeMesh.h"
+#include <Windows.h>
 
 const vec3 vertices[]
 {
@@ -17,43 +18,6 @@ struct Player : Camera3D
 	void CastRay(ChunkManager& world);
 	void Controls() {};
 };
-
-/*
-
-inline void Player::CastRay(ChunkManager& world)
-{
-	vec3 p = position + vec3(0.3,0.3,0.3);
-	vec3 v = Direction;
-	for(int i = 0; i<100; i ++)
-	{
-		if (world.GetBlock(p.x, p.y, p.z) != 0)
-		{
-			p -= Direction*1.5;
-			//Draw3D::Plain(vec3(int(p.x), int(p.y), int(p.z)), Cube::TOP_FACE, ']', Camera3D(position, view, Direction));
-			for (int i = 0; i < 6; i++)
-			{
-				vec3 vertices[] =
-				{
-					Cube::data[i * 4 + 0],
-					Cube::data[i * 4 + 1],
-					Cube::data[i * 4 + 2],
-					Cube::data[i * 4 + 3]
-				};
-				Draw3D::Plain_uv(p, vertices, 1, Camera3D(position, view, Direction));
-			}
-		}
-		float dx = v.x >= 0 ? (int(p.x) + 1 - p.x) / v.x : (int(p.x) - 1 - p.x) / v.x;
-		float dy = v.y >= 0 ? (int(p.y) + 1 - p.y) / v.y : (int(p.y) - 1 - p.y) / v.y;
-		float dz = v.z >= 0 ? (int(p.z) + 1 - p.z) / v.z : (int(p.z) - 1 - p.z) / v.z;
-		//p = dx < dy ? p + v * dx : p + v * dy;
-		if (dx < dy && dx < dz) p = p + v * dx;
-		else if (dy < dx && dy < dz) p = p + v * dy;
-		else p = p + v * dz;
-	}
-
-}
-
-*/
 inline void Player::CastRay(ChunkManager& world)
 {
 	vec3 p = position + vec3(0.5, 0.5, 0.5);
@@ -76,12 +40,44 @@ inline void Player::CastRay(ChunkManager& world)
 	{
 		vec3 vertices[] =
 		{
-			Cube::data[i * 4 + 0]*0.5 - vec3(0.5, 0.5, 0.5),
-			Cube::data[i * 4 + 1]*0.5 - vec3(0.5, 0.5, 0.5),
-			Cube::data[i * 4 + 2]*0.5 - vec3(0.5, 0.5, 0.5),
-			Cube::data[i * 4 + 3]*0.5 - vec3(0.5, 0.5, 0.5)
+			Cube::data[i * 4 + 0],
+			Cube::data[i * 4 + 1],
+			Cube::data[i * 4 + 2],
+			Cube::data[i * 4 + 3]
 		};
-		Draw3D::Plain(p, vertices, ']', Camera3D(position, view, Direction));
+		vec3 pos = p - Direction * 0.02;
+		Draw3D::Plain(vec3(int(pos.x), int(pos.y), int(pos.z)), vertices, ']', Camera3D(position, view, Direction));
 	}
+
+	static float place_time = 0;
+	place_time += DeltaTime::GetFrameTime();
+
+	if (GetAsyncKeyState(13) & 0x8000 && place_time > 0.1)
+	{
+		p -= Direction * 0.02;
+		if (world.does_chunk_exist(p.x, p.y, p.z))
+		{
+			world.GetBlock_r(int(p.x), int(p.y), int(p.z)).block_type = 1;
+			world.MeshChunk(p.x / CHUNK_LENGTH, p.y / CHUNK_LENGTH, p.z / CHUNK_LENGTH);
+		}
+		place_time = 0;
+	}
+	if (GetAsyncKeyState(8) & 0x8000)
+	{
+		p += Direction * 0.02;
+		if (world.does_chunk_exist(p.x, p.y, p.z))
+		{
+			world.GetBlock_r(int(p.x), int(p.y), int(p.z)).block_type = 0;
+			world.MeshChunk(p.x / CHUNK_LENGTH, p.y / CHUNK_LENGTH, p.z / CHUNK_LENGTH);
+		}
+	}
+
 }
 
+//vec3 vertices[] =
+		//{
+		//	Cube::data[i * 4 + 0]*0.5 - vec3(0.5, 0.5, 0.5),
+		//	Cube::data[i * 4 + 1]*0.5 - vec3(0.5, 0.5, 0.5),
+		//	Cube::data[i * 4 + 2]*0.5 - vec3(0.5, 0.5, 0.5),
+		//	Cube::data[i * 4 + 3]*0.5 - vec3(0.5, 0.5, 0.5)
+		//};

@@ -8,7 +8,7 @@
 int main()
 {
 	//window initialization
-	Terminal3D::Init(800,480, ' ');
+	Terminal3D::Init(400,350, ' ');
 
 
 	//DeltaTime::SetTargetFPS(60);
@@ -18,7 +18,7 @@ int main()
 
 	float time = 0;
 
-	int map_length = 5;
+	int map_length = 10;
 
 	ChunkManager n(map_length);
 	for (int chunk_y = 0; chunk_y < map_length; chunk_y++)
