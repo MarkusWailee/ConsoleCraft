@@ -4,7 +4,7 @@
 
 struct ASCI_Texture
 {
-	char* data = NULL;
+	const char* data = NULL;
 	int width = 0;
 	int height = 0;
 	char GetCoord(int x, int y)
@@ -23,7 +23,7 @@ protected:
 	ASCI_Texture textures[128];
 	ASCI_TextureManager(){}
 public:
-	void add_texture(char tex_code, char* tex_data, int width, int height)
+	void add_texture(char tex_code, const char* tex_data,const int width, const int height)
 	{
 		//Im assigning letters to each texture;
 		ASCI_Texture& tex = textures[tex_code];

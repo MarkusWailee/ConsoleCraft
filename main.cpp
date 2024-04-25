@@ -1,18 +1,18 @@
 #include <iostream>
 #include "AsciGraphics/AsciGraphics.h"
 #include "ChunkManager.hpp"
-
-
+#include "Player.hpp"
+#include <thread>
 
 
 int main()
 {
 	//window initialization
-	Terminal3D::Init(500,280, 'G');
+	Terminal3D::Init(800,480, ' ');
 
 
 	//DeltaTime::SetTargetFPS(60);
-	Camera3D camera;
+	Player camera;
 
 
 
@@ -31,20 +31,27 @@ int main()
 			for (int chunk_x = 0; chunk_x < map_length; chunk_x++)
 				n.MeshChunk(chunk_x, chunk_y, chunk_z);
 
+	//physics
+	//std::thread([&]
+	//	{
+	//		while (true)
+	//		{
+	//			camera.FreeCam();
+	//			DeltaTime::HandleTime();
+	//		}
+	//	}).detach();
 
+	//Rendering
 	while (true)
 	{
 		DeltaTime::HandleTime();
 		DeltaTime::ShowFPS();
-
-		time += 0.5*DeltaTime::GetFrameTime();
-		camera.Update();
+		camera.FreeCam();
 
 
-
-		//Demo
 		n.Render(camera);
-		
+		Draw::Circle(vec2(Terminal3D::GetScreenWidth()/2, Terminal3D::GetScreenHeight()/2), 1, '#');
+		camera.CastRay(n);
 
 		Terminal3D::Render();// <- couts the string
 		Terminal3D::ClearBuffer();

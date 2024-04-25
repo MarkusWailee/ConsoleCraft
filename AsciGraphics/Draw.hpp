@@ -139,9 +139,9 @@ inline void Draw::Triangle(vec3 p1, vec3 p2, vec3 p3, char c) //RASTERIZER using
 	if (min_y < 0) min_y = 0;
 	if (max_x > Terminal3D::GetScreenWidth()) max_x = Terminal3D::GetScreenWidth();
 	if (max_y > Terminal3D::GetScreenHeight()) max_y = Terminal3D::GetScreenHeight();
-	for (int posY = min_y; posY < max_y; posY++)
+	for (int posY = min_y; posY <= max_y; posY++)
 	{
-		for (int posX = min_x; posX < max_x; posX++)
+		for (int posX = min_x; posX <= max_x; posX++)
 		{
 			float w1, w2, w3;
 			w2 = ((posY - p1.y) * (p3.x - p1.x) - (posX - p1.x) * (p3.y - p1.y)) /

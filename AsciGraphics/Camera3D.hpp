@@ -10,10 +10,11 @@ struct Camera3D
 	vec3 position;
 	vec2 view;
 	vec3 Direction;
-
+	Camera3D(){}
+	Camera3D(vec3 position, vec2 view, vec3 Direction) : position(position), view(view), Direction(Direction){}
 	mat3 RotXAxis();
 	mat3 RotYAxis();
-	void Update();
+	void FreeCam();
 };
 
 inline mat3 Camera3D::RotXAxis()
@@ -35,10 +36,10 @@ inline mat3 Camera3D::RotYAxis()
 	};
 }
 
-inline void Camera3D::Update()
+inline void Camera3D::FreeCam()
 {
 	vec2 movement_direction = vec2(0, 0);
-	float speed = 4;
+	float speed = 5;
 	float sensitivity = 2;
 	mat3 RotY =
 	{
@@ -77,6 +78,5 @@ inline void Camera3D::Update()
 		view.y -= sensitivity * DeltaTime::GetFrameTime();
 	if (GetAsyncKeyState(38) & 0x8000)
 		view.y += sensitivity * DeltaTime::GetFrameTime();
-
 	position += speed * vec3(movement_direction.x, 0, movement_direction.y) * DeltaTime::GetFrameTime();
 }
