@@ -8,11 +8,11 @@
 class Draw3D : Draw
 {
 public:
-	static void Plain_uv(const vec3 position, const vec3* vertices4, char tex_code, Camera3D camera);
+	static void Plain_uv(const vec3 position, const vec3* vertices4, char tex_code, float Brightness, Camera3D camera);
 	static void Plain(const vec3 position, const vec3* vertices4, char character, Camera3D camera);
 };
 
-inline void Draw3D::Plain_uv(vec3 position, const vec3* vertices4, char tex_code, Camera3D camera)
+inline void Draw3D::Plain_uv(vec3 position, const vec3* vertices4, char tex_code, float Brightness, Camera3D camera)
 {
 	vec3 quad_vertices[4];
 	for (int i = 0; i < 4; i++)
@@ -28,7 +28,7 @@ inline void Draw3D::Plain_uv(vec3 position, const vec3* vertices4, char tex_code
 		quad_vertices[i] = vertice;
 	}
 	//Render 2D vertices
-	Quad_uv(quad_vertices, tex_code);
+	Quad_uv(quad_vertices, tex_code, Brightness);
 }
 
 inline void Draw3D::Plain(const vec3 position, const vec3* vertices4, char character, Camera3D camera)

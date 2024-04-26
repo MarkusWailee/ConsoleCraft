@@ -12,6 +12,7 @@ public:
 	void HandleTime();
 	void ShowFPS();
 	float GetFrameTime() { return deltaTime; }
+	float GetTime();
 	void SetTargetFPS(float FPS_TARGET);
 private:
 	std::chrono::time_point<std::chrono::high_resolution_clock> start;
@@ -22,6 +23,12 @@ private:
 	float AVG_FPS = 0;
 };
 
+inline float DeltaTime::GetTime()
+{
+	auto static start = timer.now();
+	auto duration_ms = std::chrono::duration_cast<std::chrono::milliseconds>(timer.now() - start);
+	return duration_ms.count() / 1000.0f;
+}
 inline void DeltaTime::HandleTime()
 {
 	//static auto start = timer.now();

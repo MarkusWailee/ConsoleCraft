@@ -3,16 +3,29 @@
 #include <vector>
 #include <fstream>
 
+
+
+inline char GetGradient(float Brightness)
+{
+	const static std::string ASCI_GRADIENT = " .:'-~=<\*({[%08O#@Q&";
+	if (Brightness >= 1) Brightness = 0.9999;
+	else if (Brightness < 0)Brightness = 0;
+	return ASCI_GRADIENT[ASCI_GRADIENT.size() * Brightness];
+}
+
 struct ASCI_Texture
 {
-	char* data = NULL;
+	unsigned char* data = NULL;
 	int width = 0;
 	int height = 0;
-	char GetCoord(int x, int y)
+	char GetCoord(int x, int y, float Brightness)
 	{
+		if (Brightness > 0.99) Brightness = 0.99;
+		if (Brightness < 0) Brightness = 0;
+		const static float max_value = 1.0f / 255.0f;
 		if (x < 0 || x >= width || y < 0 || y >= height) return '?';
 		int offset = x + (height-y-1) * width;
-		return data[offset];
+		return GetGradient(data[offset] * max_value * Brightness);
 	}
 	ASCI_Texture(){}
 	~ASCI_Texture() { delete[] data; }
@@ -21,10 +34,11 @@ struct ASCI_Texture
 class ASCI_TextureManager
 {
 protected:
+
 	ASCI_Texture textures[128];
 	ASCI_TextureManager(){}
 public:
-	void add_texture(char tex_code, char* tex_data,const int width, const int height)
+	void add_texture(char tex_code, unsigned char* tex_data,const int width, const int height)
 	{
 		//Im assigning letters to each texture;
 		ASCI_Texture& tex = textures[tex_code];
@@ -39,7 +53,8 @@ public:
 	}
 	void add_texture_ppm(char tex_code, std::string file_name)
 	{
-		std::string ASCI_Gradient = " .:'-~=<\*({[%08O#@Q&";		//" .:-~=+*%08O#@Q";
+		
+		//std::string ASCI_Gradient = " .:-~=+*%08O#@Q";
 		//std::string ASCI_Gradient = " .,*#jH@OQ";
 		ASCI_Texture& texture = textures[tex_code];
 		std::ifstream Image(file_name, std::ios::binary);
@@ -67,7 +82,7 @@ public:
 
 		//unsigned char* rgb_data = new unsigned char[rgb_size];
 		if (texture.data != NULL) delete[] texture.data;
-		texture.data = new char[texture.width * texture.height];
+		texture.data = new unsigned char[texture.width * texture.height];
 		for (int i = 0; i < texture.width * texture.height; ++i)
 		{
 			unsigned char r, g, b;
@@ -75,9 +90,9 @@ public:
 			Image.read(reinterpret_cast<char*>(&g), sizeof(unsigned char));
 			Image.read(reinterpret_cast<char*>(&b), sizeof(unsigned char));
 
-			// Calculate brightness gradient and map to ASCII character
-			float gradient = (r + g + b) / (3.0f * max_value);
-			texture.data[i] = ASCI_Gradient[ASCI_Gradient.size() * gradient];
+			// Calculate brightness gradient and map to ASCII character, range of 0 to 255 brightness
+			unsigned char gradient = float((float(r) + float(g) + float(b)) / 3.0f);
+			texture.data[i] = gradient;
 		}
 		Image.close();
 	}

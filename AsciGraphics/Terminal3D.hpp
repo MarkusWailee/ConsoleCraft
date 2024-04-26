@@ -10,7 +10,8 @@ class Terminal3D : ASCI_TextureManager
 	friend class Draw;//to access private members
 	Terminal3D() {};
 public:
-	static void Add_Texture(const char tex_code, char* tex_data, const int width, const int height) { Get().add_texture(tex_code, tex_data, width, height); }
+	static void ChangeBackbuffer(char character);
+	static void Add_Texture(const char tex_code, unsigned char* tex_data, const int width, const int height) { Get().add_texture(tex_code, tex_data, width, height); }
 	static void Add_Texture_ppm(const char tex_code, std::string file_name) { Get().add_texture_ppm(tex_code, file_name); }
 	static ASCI_Texture& Get_texture(char tex_code) { Get().get_texture(tex_code); }
 	static void Init(int ScreenWidth, int ScreenHeight, char background_character);
@@ -98,6 +99,18 @@ inline void Terminal3D::SetPixel(vec3 position, char character)
 	int front_buffer_offset2 = x * 2 + 1 + y * (Get().SCREEN_CHAR_WIDTH);
 	Get().front_buffer[front_buffer_offset1] = character;
 	Get().front_buffer[front_buffer_offset2] = character;
+}
+
+inline void Terminal3D::ChangeBackbuffer(char character)
+{
+	static char old_character = -1;
+	if (old_character == character)return;
+	old_character = character;
+	std::fill_n(Get().back_buffer, Get().SCREEN_CHAR_COUNT, character);
+	for (int i = 0; i <= Get().screen_h; i++)
+		Get().back_buffer[(Get().screen_w * 2) + i * (Get().screen_w * 2 + 1)] = '\n';
+	Get().back_buffer[Get().SCREEN_CHAR_COUNT - 2] = '\n';
+	Get().back_buffer[Get().SCREEN_CHAR_COUNT - 1] = NULL;
 }
 
 

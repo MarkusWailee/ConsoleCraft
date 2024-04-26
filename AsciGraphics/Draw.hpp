@@ -20,27 +20,27 @@ private:
 public:
 	//2D functions
 	static void Triangle(vec3 p1, vec3 p2, vec3 p3, char c);
-	static void Triangle_uv(vec3 p1, vec3 p2, vec3 p3, vec2* uv, char tex_code);
+	static void Triangle_uv(vec3 p1, vec3 p2, vec3 p3, vec2* uv, char tex_code, float Brightness);
 	static void Quad(vec3 p1, vec3 p2, vec3 p3, vec3 p4, char character);
 	static void Quad(vec3* p, char character);
-	static void Quad_uv(vec3* p, char tex_code);
-	static void Quad_uv(vec3 p1, vec3 p2, vec3 p3, vec3 p4, char tex_code);
+	static void Quad_uv(vec3* p, char tex_code, float Brightness);
+	static void Quad_uv(vec3 p1, vec3 p2, vec3 p3, vec3 p4, char tex_code, float Brightnes);
 	static void Circle(vec2 position, float r, char character);
 };
 
-inline void Draw::Quad_uv(vec3* p, char tex_code) //use 4 points
+inline void Draw::Quad_uv(vec3* p, char tex_code, float Brightness) //use 4 points
 {
 	vec2 uv1[] = { vec2(0,0),vec2(1,0)/p[1].z,vec2(1,1)/p[2].z};
 	vec2 uv2[] = { vec2(0,0),vec2(1,1)/p[2].z,vec2(0,1)/p[3].z};
-	Triangle_uv(p[0], p[1], p[2], uv1, tex_code);
-	Triangle_uv(p[0], p[2], p[3], uv2, tex_code);
+	Triangle_uv(p[0], p[1], p[2], uv1, tex_code, Brightness);
+	Triangle_uv(p[0], p[2], p[3], uv2, tex_code, Brightness);
 }
-inline void Draw::Quad_uv(vec3 p1, vec3 p2, vec3 p3, vec3 p4, char tex_code)
+inline void Draw::Quad_uv(vec3 p1, vec3 p2, vec3 p3, vec3 p4, char tex_code, float Brightness)
 {
 	vec2 uv1[] = { vec2(0,0),vec2(1,0) / p2.z,vec2(1,1) / p3.z };
 	vec2 uv2[] = { vec2(0,0),vec2(1,1) / p3.z,vec2(0,1) / p4.z };
-	Triangle_uv(p1, p2, p3, uv1, tex_code);
-	Triangle_uv(p1, p3, p4, uv2, tex_code);
+	Triangle_uv(p1, p2, p3, uv1, tex_code, Brightness);
+	Triangle_uv(p1, p3, p4, uv2, tex_code, Brightness);
 }
 
 inline void Draw::Quad(vec3 p1, vec3 p2, vec3 p3, vec3 p4, char character)
@@ -54,8 +54,9 @@ inline void Draw::Quad(vec3* p, char character)
 	Triangle(p[0], p[2], p[3], character);
 }
 
-inline void Draw::Triangle_uv(vec3 p1, vec3 p2, vec3 p3, vec2* uv, char tex_code)
+inline void Draw::Triangle_uv(vec3 p1, vec3 p2, vec3 p3, vec2* uv, char tex_code, float Brightness)
 {
+
 	ASCI_Texture& tex = Get().textures[tex_code];
 	if (tex.data == NULL)return;
 
@@ -111,7 +112,7 @@ inline void Draw::Triangle_uv(vec3 p1, vec3 p2, vec3 p3, vec2* uv, char tex_code
 			int uv_x = uv_cord.x * tex.width;
 			int uv_y = uv_cord.y * tex.height;
 			if (!(w1 >= -0 && w1 <= 1 && w2 >= -0 && w2 <= 1 && w3 >= -0 && w3 <= 1 ))continue;
-			Get().SetPixel(pixel_position, tex.GetCoord(uv_x,uv_y));
+			Get().SetPixel(pixel_position, tex.GetCoord(uv_x,uv_y, Brightness));
 		}
 	}
 }

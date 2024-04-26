@@ -58,11 +58,7 @@ class ChunkManager
 public:
 	ChunkManager(int distance) : map_length(distance), map_size(distance * distance * distance) 
 	{
-		Terminal3D::Add_Texture_ppm(1, "src/Textures/oak_planks1.ppm");
-		Terminal3D::Add_Texture_ppm(2, "src/Textures/waterfall.ppm");
-		Terminal3D::Add_Texture_ppm(3, "src/Textures/oak_planks3.ppm");
-		Terminal3D::Add_Texture_ppm(4, "src/Textures/crafting.ppm");
-		Terminal3D::Add_Texture_ppm(5, "src/Textures/cobblestone3.ppm");
+		Terminal3D::Add_Texture_ppm(1, "src/Textures/oak_planks1.ppm");;
 		chunks = new Chunk[map_size];
 	}
 	~ChunkManager() { delete[] chunks; }
@@ -77,7 +73,7 @@ public:
 	void MeshAdjacentBlocks(int block_x, int block_y, int block_z);
 
 	//I use this for raycasting 
-	void Render(Camera3D camera);
+	void Render(Camera3D camera, float Brightness);
 };
 
 inline bool ChunkManager::does_block_exist(int block_x, int block_y, int block_z)
@@ -216,12 +212,21 @@ inline void ChunkManager::MeshAdjacentBlocks(int block_x, int block_y, int block
 					MeshBlock(block_x+x, block_y+y, block_z+z);
 }
 
-inline void ChunkManager::Render(Camera3D camera)
+inline void ChunkManager::Render(Camera3D camera, float Brightness)
 {
 
-	const int test[] =
+	const float Face_Brightness[] =
 	{
-		2,1,4,5,3,1
+		0.8,0.7,0.6,0.95,0.5,1
+	};
+	vec3 block_normals[]
+	{
+		vec3(0,0,-1),
+		vec3(1,0,0),
+		vec3(0,0,1),
+		vec3(-1,0,0),
+		vec3(0,-1,0),
+		vec3(0,1,0),
 	};
 
 	for (int i = 0; i < map_size; i++)
@@ -251,7 +256,7 @@ inline void ChunkManager::Render(Camera3D camera)
 							Cube::data[i * 4 + 2],
 							Cube::data[i * 4 + 3]
 						};
-						Draw3D::Plain_uv(position, vertices, test[i], camera);
+						Draw3D::Plain_uv(position, vertices, 1, Face_Brightness[i] * Brightness, camera);
 					}
 				}
 	
