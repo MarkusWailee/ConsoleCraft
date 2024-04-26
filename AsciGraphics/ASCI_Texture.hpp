@@ -39,7 +39,7 @@ public:
 	}
 	void add_texture_ppm(char tex_code, std::string file_name)
 	{
-		std::string ASCI_Gradient = " .:-~=+*%08O#@Q";
+		std::string ASCI_Gradient = " .:'-~=<\*({[%08O#@Q&";		//" .:-~=+*%08O#@Q";
 		//std::string ASCI_Gradient = " .,*#jH@OQ";
 		ASCI_Texture& texture = textures[tex_code];
 		std::ifstream Image(file_name, std::ios::binary);

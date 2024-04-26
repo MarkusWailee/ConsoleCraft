@@ -59,9 +59,10 @@ public:
 	ChunkManager(int distance) : map_length(distance), map_size(distance * distance * distance) 
 	{
 		Terminal3D::Add_Texture_ppm(1, "src/Textures/oak_planks1.ppm");
-		Terminal3D::Add_Texture_ppm(2, "src/Textures/oak_planks2.ppm");
+		Terminal3D::Add_Texture_ppm(2, "src/Textures/waterfall.ppm");
 		Terminal3D::Add_Texture_ppm(3, "src/Textures/oak_planks3.ppm");
-		Terminal3D::Add_Texture_ppm(4, "src/Textures/cobblestone1.ppm");
+		Terminal3D::Add_Texture_ppm(4, "src/Textures/crafting.ppm");
+		Terminal3D::Add_Texture_ppm(5, "src/Textures/cobblestone3.ppm");
 		chunks = new Chunk[map_size];
 	}
 	~ChunkManager() { delete[] chunks; }
@@ -220,7 +221,7 @@ inline void ChunkManager::Render(Camera3D camera)
 
 	const int test[] =
 	{
-		2,1,2,3,3,1
+		2,1,4,5,3,1
 	};
 
 	for (int i = 0; i < map_size; i++)
