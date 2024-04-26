@@ -8,17 +8,17 @@
 int main()
 {
 	//window initialization
-	Terminal3D::Init(430,320, ' ');
+	Terminal3D::Init(460,310,float(4)/2, 'Q');
 
 
 	//DeltaTime::SetTargetFPS(60);
 	Player camera;
 
-
+	camera.position = vec3(8, 16, 8);
 
 
 	//Temporary World Generation
-	int map_length = 10;
+	int map_length = 4;
 	ChunkManager n(map_length);
 	for (int chunk_y = 0; chunk_y < map_length; chunk_y++)
 		for (int chunk_z = 0; chunk_z < map_length; chunk_z++)

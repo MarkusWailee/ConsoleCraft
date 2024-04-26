@@ -7,31 +7,9 @@
 *  x		(Chunk space block position) Chunk Block Position(CSBP)
 */ 
 
-const char _ = '.';
-const char O = ' ';
-const char G = '[';
-char tex_H[] = //16x16
-{
-	G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,
-	G,_,_,_,_,_,_,_,_,_,_,_,_,_,_,G,
-	G,_,_,_,_,_,_,_,_,_,_,_,_,_,_,G,
-	G,_,_,_,_,_,_,_,_,_,_,_,_,_,_,G,
-	G,_,_,_,_,_,_,_,_,_,_,_,_,_,_,G,
-	G,_,_,_,_,_,_,_,_,_,_,_,_,_,_,G,
-	G,_,_,_,_,_,_,_,_,_,_,_,_,_,_,G,
-	G,_,_,_,_,_,_,_,_,_,_,_,_,_,_,G,
-	G,_,_,_,_,_,_,_,_,_,_,_,_,_,_,G,
-	G,_,_,_,_,_,_,_,_,_,_,_,_,_,_,G,
-	G,_,_,_,_,_,_,_,_,_,_,_,_,_,_,G,
-	G,_,_,_,_,_,_,_,_,_,_,_,_,_,_,G,
-	G,_,_,_,_,_,_,_,_,_,_,_,_,_,_,G,
-	G,_,_,_,_,_,_,_,_,_,_,_,_,_,_,G,
-	G,_,_,_,_,_,_,_,_,_,_,_,_,_,_,G,
-	G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,
-};
 
 
-const int CHUNK_LENGTH = 16;
+const int CHUNK_LENGTH = 8;
 const int CHUNK_SIZE = CHUNK_LENGTH * CHUNK_LENGTH * CHUNK_LENGTH;
 
 struct Block
@@ -80,7 +58,10 @@ class ChunkManager
 public:
 	ChunkManager(int distance) : map_length(distance), map_size(distance * distance * distance) 
 	{
-		Terminal3D::Add_Texture(1, tex_H, 16, 16);
+		Terminal3D::Add_Texture_ppm(1, "src/Textures/oak_planks1.ppm");
+		Terminal3D::Add_Texture_ppm(2, "src/Textures/oak_planks2.ppm");
+		Terminal3D::Add_Texture_ppm(3, "src/Textures/oak_planks3.ppm");
+		Terminal3D::Add_Texture_ppm(4, "src/Textures/cobblestone1.ppm");
 		chunks = new Chunk[map_size];
 	}
 	~ChunkManager() { delete[] chunks; }
@@ -236,6 +217,12 @@ inline void ChunkManager::MeshAdjacentBlocks(int block_x, int block_y, int block
 
 inline void ChunkManager::Render(Camera3D camera)
 {
+
+	const int test[] =
+	{
+		2,1,2,3,3,1
+	};
+
 	for (int i = 0; i < map_size; i++)
 	{
 		Chunk& chunk = chunks[i];
@@ -263,7 +250,7 @@ inline void ChunkManager::Render(Camera3D camera)
 							Cube::data[i * 4 + 2],
 							Cube::data[i * 4 + 3]
 						};
-						Draw3D::Plain_uv(position, vertices, 1, camera);
+						Draw3D::Plain_uv(position, vertices, test[i], camera);
 					}
 				}
 	

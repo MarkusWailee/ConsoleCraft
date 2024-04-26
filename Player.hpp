@@ -4,19 +4,10 @@
 #include "CubeMesh.h"
 #include <Windows.h>
 
-const vec3 vertices[]
-{
-	vec3(-1,-1,0),
-	vec3(1,-1,0),
-	vec3(1,1,0),
-	vec3(-1,1,0)
-};
-
 struct Player : Camera3D
 {
 
 	void CastRay(ChunkManager& world, float FrameTime);
-	void Controls() {};
 };
 inline void Player::CastRay(ChunkManager& world, float FrameTime)
 {
@@ -79,11 +70,3 @@ inline void Player::CastRay(ChunkManager& world, float FrameTime)
 	}
 
 }
-
-//vec3 vertices[] =
-		//{
-		//	Cube::data[i * 4 + 0]*0.5 - vec3(0.5, 0.5, 0.5),
-		//	Cube::data[i * 4 + 1]*0.5 - vec3(0.5, 0.5, 0.5),
-		//	Cube::data[i * 4 + 2]*0.5 - vec3(0.5, 0.5, 0.5),
-		//	Cube::data[i * 4 + 3]*0.5 - vec3(0.5, 0.5, 0.5)
-		//};
