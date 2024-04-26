@@ -12,12 +12,14 @@ class Terminal3D : ASCI_TextureManager
 public:
 	static void Add_Texture(const char tex_code, const char* tex_data, const int width, const int height) { Get().add_texture(tex_code, tex_data, width, height); }
 	static ASCI_Texture& Get_texture(char tex_code) { Get().get_texture(tex_code); }
-	static void Init(int ScreenWidth, int ScreenHeight, char background_character) { Get().init_i(ScreenWidth, ScreenHeight, background_character); };
+	static void Init(int ScreenWidth, int ScreenHeight, char background_character);
+	static void Init(int ScreenWidth, int ScreenHeight, float aspect_ratio, char background_character);
 	static void ClearBuffer();
 	static void Render() { std::cout << "\x1B[H" << Get().front_buffer; }
 	static void SetPixel(vec3 position, char character);
 	static int GetScreenWidth() { return Get().screen_w; }
 	static int GetScreenHeight() { return Get().screen_h; }
+	static float GetAspectRatio() { return Get().aspect_ratio; }
 	static void Terminate()
 	{
 		delete[] Get().z_back_buffer;
@@ -34,10 +36,22 @@ protected:
 	char* front_buffer = NULL;
 	int screen_w = 0;
 	int screen_h = 0;
+	float aspect_ratio = 0;
 	int SCREEN_CHAR_COUNT = 0;
 	int SCREEN_CHAR_WIDTH = 0;
 	void init_i(int ScreenWidth, int ScreenHeight, char background_character);
 	static Terminal3D& Get() { static Terminal3D instance; return instance; };
+};
+
+inline void Terminal3D::Init(int ScreenWidth, int ScreenHeight, char background_character)
+{
+	Get().aspect_ratio = float(ScreenWidth) / ScreenHeight;
+	Get().init_i(ScreenWidth, ScreenHeight, background_character); 
+};
+inline void Terminal3D::Init(int ScreenWidth, int ScreenHeight, float aspect_ratio, char background_character)
+{
+	Get().aspect_ratio = aspect_ratio;
+	Get().init_i(ScreenWidth, ScreenHeight, background_character);
 };
 inline void Terminal3D::ClearBuffer()
 {

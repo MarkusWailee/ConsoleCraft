@@ -80,7 +80,6 @@ class ChunkManager
 public:
 	ChunkManager(int distance) : map_length(distance), map_size(distance * distance * distance) 
 	{
-		
 		Terminal3D::Add_Texture(1, tex_H, 16, 16);
 		chunks = new Chunk[map_size];
 	}

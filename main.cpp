@@ -8,7 +8,7 @@
 int main()
 {
 	//window initialization
-	Terminal3D::Init(800,480, ' ');
+	Terminal3D::Init(400,300, float(4)/2, ' ');
 
 
 	//DeltaTime::SetTargetFPS(60);
@@ -29,10 +29,6 @@ int main()
 		for (int chunk_z = 0; chunk_z < map_length; chunk_z++)
 			for (int chunk_x = 0; chunk_x < map_length; chunk_x++)
 				n.MeshChunk(chunk_x, chunk_y, chunk_z);
-
-
-
-
 
 
 
