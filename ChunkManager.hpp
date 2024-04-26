@@ -10,7 +10,7 @@
 const char _ = '.';
 const char O = ' ';
 const char G = '[';
-const char tex_H[] = //16x16
+char tex_H[] = //16x16
 {
 	G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,
 	G,_,_,_,_,_,_,_,_,_,_,_,_,_,_,G,

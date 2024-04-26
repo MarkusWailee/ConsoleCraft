@@ -10,7 +10,7 @@ class Terminal3D : ASCI_TextureManager
 	friend class Draw;//to access private members
 	Terminal3D() {};
 public:
-	static void Add_Texture(const char tex_code, const char* tex_data, const int width, const int height) { Get().add_texture(tex_code, tex_data, width, height); }
+	static void Add_Texture(const char tex_code, char* tex_data, const int width, const int height) { Get().add_texture(tex_code, tex_data, width, height); }
 	static ASCI_Texture& Get_texture(char tex_code) { Get().get_texture(tex_code); }
 	static void Init(int ScreenWidth, int ScreenHeight, char background_character);
 	static void Init(int ScreenWidth, int ScreenHeight, float aspect_ratio, char background_character);
