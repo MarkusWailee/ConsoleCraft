@@ -144,7 +144,7 @@ inline void Player::controls(float FrameTime)
 		velocity.y = -10;
 	if (GetAsyncKeyState(' ') & 0x8000 && (on_ground || is_flying))
 	{
-		velocity.y = 10;
+		velocity.y = 6;
 		on_ground = 0;
 	}
 	if (GetAsyncKeyState(37) & 0x8000)
@@ -164,10 +164,10 @@ inline void Player::controls(float FrameTime)
 
 
 	if(!is_flying)
-		velocity.y -= 50 * FrameTime;
+		velocity.y -= 15 * FrameTime;
 
-	if(on_ground)
-	velocity -= friction * velocity * FrameTime;
+	velocity.x -= friction * velocity.x * FrameTime;
+	velocity.z -= friction * velocity.z * FrameTime;
 
 	position += velocity * FrameTime;
 }
