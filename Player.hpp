@@ -1,17 +1,24 @@
 #pragma once
-#include "AsciGraphics/Camera3D.hpp"
 #include "ChunkManager.hpp"
 #include "CubeMesh.h"
 #include <Windows.h>
+#include "AABB.hpp"
 
 struct Player : Camera3D
 {
 
-	void CastRay(ChunkManager& world, float FrameTime);
+	void cast_ray(ChunkManager& world, float FrameTime);
+	void world_collision(ChunkManager& world);
+	void controls(float FrameTime);
 private:
+	bool is_flying = 0;
+	bool on_ground = 0;
+	vec3 velocity;
 	unsigned char block_selected = 1;
 };
-inline void Player::CastRay(ChunkManager& world, float FrameTime)
+
+
+inline void Player::cast_ray(ChunkManager& world, float FrameTime)
 {
 	vec3 p = position + vec3(0.5, 0.5, 0.5);
 	vec3 v = Direction;
@@ -26,26 +33,8 @@ inline void Player::CastRay(ChunkManager& world, float FrameTime)
 		if (dz < dx && dz < dy)p = p + v * (dz + 0.01);
 	}
 	p = p - v * 0.01;
-
-
-
-	for (int i = 0; i < 6; i++)
-	{
-		vec3 vertices[] =
-		{
-			Cube::vertice_data[i * 4 + 0],
-			Cube::vertice_data[i * 4 + 1],
-			Cube::vertice_data[i * 4 + 2],
-			Cube::vertice_data[i * 4 + 3]
-		};
-		vec3 pos = p - Direction * 0.02;
-		//Draw3D::Plain(vec3(int(pos.x), int(pos.y), int(pos.z)), vertices, ']', Camera3D(position, view, Direction));
-	}
-
 	static float place_time = 0;
 	place_time += FrameTime;
-
-
 	//Place Blocks
 	if (GetAsyncKeyState(13) & 0x8000 && place_time > 0.2)
 	{
@@ -55,7 +44,6 @@ inline void Player::CastRay(ChunkManager& world, float FrameTime)
 			world.GetBlock_r(int(p.x), int(p.y), int(p.z)).block_type = block_selected;
 			world.MeshAdjacentBlocks(p.x, p.y, p.z);
 		}
-
 		place_time = 0;
 	}
 
@@ -84,4 +72,102 @@ inline void Player::CastRay(ChunkManager& world, float FrameTime)
 	if (GetAsyncKeyState(54) & 0x8000)
 		block_selected = 6;
 
+}
+
+inline void Player::world_collision(ChunkManager& world)
+{
+	AABB player_AABB(position - vec3(0, 1, 0), 1.0f, 2.0f);
+
+	for (int y = position.y - 1; y < position.y + 1; y++)
+		for (int z = position.z - 1; z < position.z + 1; z++)
+			for (int x = position.x - 1; x < position.x + 1; x++)
+			{
+				Block block = world.GetBlock(x, y, z);
+				if (block.block_type == 0) continue;
+				AABB block_AABB(vec3(x, y, z), 1);
+				if (player_AABB.Collision_test(block_AABB))
+				{
+					int face_hit = -1;
+					player_AABB.p = player_AABB.Collide(block_AABB, face_hit);
+					switch (face_hit)
+					{
+					case 0: velocity.z = 0; break;
+					case 1: velocity.x = 0; break;
+					case 2: velocity.z = 0; break;
+					case 3: velocity.x = 0; break;
+					case 5: 
+						velocity.y = 0; 
+						on_ground = 1;
+						break;
+					}
+				}
+			}
+	position = player_AABB.p + vec3(0,1,0);
+}
+
+
+inline void Player::controls(float FrameTime)
+{
+	vec2 movement_direction = vec2(0, 0);
+	float movement_y = 0;
+
+	float speed = 25;
+	float acceleration = 50;
+	float sensitivity = 2;
+	float friction = 10;
+	mat3 RotY =
+	{
+		cosf(-view.x), 0, sinf(-view.x),
+		0,1,0,
+		-sinf(-view.x), 0 , cosf(-view.x),
+	};
+	mat3 RotX =
+	{
+		1,0,0,
+		 0,cosf(-view.y), -sinf(-view.y),
+		 0,sinf(-view.y), cosf(-view.y),
+	};
+	Direction = RotY * RotX * vec3(0, 0, 1);
+
+	//Camera movement windows users only
+	if (GetAsyncKeyState('W') & 0x8000)
+		movement_direction += vec2(-sin(view.x), cos(view.x));
+	if (GetAsyncKeyState('A') & 0x8000)
+		movement_direction -= vec2(cos(view.x), sin(view.x));
+	if (GetAsyncKeyState('D') & 0x8000)
+		movement_direction += vec2(cos(view.x), sin(view.x));
+	if (GetAsyncKeyState('S') & 0x8000)
+		movement_direction -= vec2(-sin(view.x), cos(view.x));
+	if (movement_direction.mag() > 1)
+		movement_direction = movement_direction.Normalize();
+	if (GetAsyncKeyState('C') & 0x8000)
+		velocity.y = -10;
+	if (GetAsyncKeyState(' ') & 0x8000 && (on_ground || is_flying))
+	{
+		velocity.y = 10;
+		on_ground = 0;
+	}
+	if (GetAsyncKeyState(37) & 0x8000)
+		view.x += sensitivity * FrameTime;
+	if (GetAsyncKeyState(39) & 0x8000)
+		view.x -= sensitivity * FrameTime;
+	if (GetAsyncKeyState(40) & 0x8000)
+		view.y -= sensitivity * FrameTime;
+	if (GetAsyncKeyState(38) & 0x8000)
+		view.y += sensitivity * FrameTime;
+	
+	if (velocity.x * velocity.x + velocity.z * velocity.z < speed * speed)
+	{
+		velocity.x += acceleration * movement_direction.x * FrameTime;
+		velocity.z += acceleration * movement_direction.y * FrameTime;
+	}
+
+
+	if(!is_flying)
+		velocity.y -= 50 * FrameTime;
+
+	if(on_ground)
+	velocity -= friction * velocity * FrameTime;
+
+	position += velocity * FrameTime;
 }

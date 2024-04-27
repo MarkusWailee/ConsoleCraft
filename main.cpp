@@ -12,29 +12,34 @@ int main()
 
 	Player camera;
 
-	camera.position = vec3(8, 16, 8);
+	camera.position = vec3(8, 32, 8);
 
 
 	//Temporary World Generation
 	int map_length = 10;
+	int offset = 0;
 	ChunkManager n(map_length);
-	for (int chunk_y = 0; chunk_y < map_length; chunk_y++)
-		for (int chunk_z = 0; chunk_z < map_length; chunk_z++)
-			for (int chunk_x = 0; chunk_x < map_length; chunk_x++)
+	for (int chunk_y = - offset; chunk_y < map_length - offset; chunk_y++)
+		for (int chunk_z = -offset; chunk_z < map_length - offset; chunk_z++)
+			for (int chunk_x = -offset; chunk_x < map_length - offset; chunk_x++)
 				n.AddChunk(chunk_x, chunk_y, chunk_z);
 
-	for (int chunk_y = 0; chunk_y < map_length; chunk_y++)
-		for (int chunk_z = 0; chunk_z < map_length; chunk_z++)
-			for (int chunk_x = 0; chunk_x < map_length; chunk_x++)
+	for (int chunk_y = - offset; chunk_y < map_length - offset; chunk_y++)
+		for (int chunk_z = -offset; chunk_z < map_length - offset; chunk_z++)
+			for (int chunk_x = -offset; chunk_x < map_length - offset; chunk_x++)
 				n.MeshChunk(chunk_x, chunk_y, chunk_z);
 
 	float Global_Brightness = 0;
 	vec3 sun_pos = vec3(1,1,1);
 
+
 	//Game Logic
+
+
 	std::thread([&]
 	{
 		DeltaTime Game_Time;
+		Game_Time.HandleTime();
 		while (true)
 		{
 			Game_Time.HandleTime();
@@ -43,8 +48,9 @@ int main()
 			Terminal3D::ChangeBackbuffer(GetGradient(Global_Brightness*0.8));
 
 			//Terminal3D::ChangeBackbuffer(' ');
-			camera.FreeCam(Game_Time.GetFrameTime());
-			camera.CastRay(n, Game_Time.GetFrameTime());
+			camera.controls(Game_Time.GetFrameTime());
+			camera.cast_ray(n, Game_Time.GetFrameTime());
+			camera.world_collision(n);
 		}
 	}).detach();
 
