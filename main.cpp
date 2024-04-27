@@ -4,17 +4,38 @@
 #include "Player.hpp"
 #include <thread>
 
+inline mat3 GetRotY(float amount)
+{
+	return mat3
+	{
+		cosf(amount), 0, sinf(amount),
+		0,1,0,
+		-sinf(amount), 0 ,cosf(amount)
+	};
+}
+
+inline mat3 GetRotX(float amount)
+{
+	return mat3
+	{
+		1,0,0,
+		0,cosf(amount), -sinf(amount),
+		0,sinf(amount), cosf(amount)
+	};
+}
+
 
 int main()
 {
 	//window initialization
-	Terminal3D::Init(430,300,float(4)/2, 'Q');
+	Terminal3D::Init(460,320,float(4)/2.1, 'Q');
 
 
 	//DeltaTime::SetTargetFPS(60);
 	Player camera;
 
 	camera.position = vec3(8, 16, 8);
+	vec3 sun_pos = vec3(-100, 100, 0);
 
 
 	//Temporary World Generation
@@ -37,27 +58,31 @@ int main()
 		DeltaTime Game_Time;
 		while (true)
 		{
-			//std::cout << Timer << '\n';
 			Game_Time.HandleTime();
-			Global_Brightness = (sinf(Game_Time.GetTime() * 0.5) + 1) / 2.0f + 0.5;
-			Terminal3D::ChangeBackbuffer(GetGradient(Global_Brightness));
+			Global_Brightness = (sun_pos.y + 50 )/100 + 0.1;
+			sun_pos = GetRotY(0.5) * GetRotX(Game_Time.GetTime() * 0.5) * vec3(10, 0, -50);
+			Terminal3D::ChangeBackbuffer(GetGradient(Global_Brightness*0.8));
+
+
 			//Terminal3D::ChangeBackbuffer(' ');
 			camera.FreeCam(Game_Time.GetFrameTime());
 			camera.CastRay(n, Game_Time.GetFrameTime());
 		}
 	}).detach();
 
-	//std::cin.get();
 	//Rendering Logic
 	DeltaTime Render_Time;
 	while (true)
 	{
 		Render_Time.HandleTime();
-		Render_Time.ShowFPS();
-		n.Render(camera, Global_Brightness);
-		Draw::Circle(vec2(Terminal3D::GetScreenWidth()/2, Terminal3D::GetScreenHeight()/2), 1, '#');
+		//Render_Time.ShowFPS();
+		n.Render(camera, Clampf(Global_Brightness, 0.1, 0.7), sun_pos);
+		Draw::Circle(vec3(0,0,0), 1, '#');
 
-		Terminal3D::Render();// <- couts the string
+		
+		Draw3D::Sun(sun_pos, 7, 1, camera);
+
+		Terminal3D::Render();// <- couts the string 
 		Terminal3D::ClearBuffer();
 	}
 	Terminal3D::Terminate();

@@ -4,12 +4,16 @@
 #include <fstream>
 
 
-
+inline float Clampf(float value, float min, float max)
+{
+	if (value > max) return max;
+	if (value < min) return min;
+	return value;
+}
 inline char GetGradient(float Brightness)
 {
 	const static std::string ASCI_GRADIENT = " .:'-~=<\*({[%08O#@Q&";
-	if (Brightness >= 1) Brightness = 0.9999;
-	else if (Brightness < 0)Brightness = 0;
+	Brightness = Clampf(Brightness, 0, 0.99);
 	return ASCI_GRADIENT[ASCI_GRADIENT.size() * Brightness];
 }
 
@@ -34,7 +38,6 @@ struct ASCI_Texture
 class ASCI_TextureManager
 {
 protected:
-
 	ASCI_Texture textures[128];
 	ASCI_TextureManager(){}
 public:
@@ -81,6 +84,7 @@ public:
 		size_t rgb_size = end_pos - current_pos - 1;
 
 		//unsigned char* rgb_data = new unsigned char[rgb_size];
+		
 		if (texture.data != NULL) delete[] texture.data;
 		texture.data = new unsigned char[texture.width * texture.height];
 		for (int i = 0; i < texture.width * texture.height; ++i)

@@ -19,13 +19,13 @@ private:
 
 public:
 	//2D functions
-	static void Triangle(vec3 p1, vec3 p2, vec3 p3, char c);
+	static void Triangle(vec3 p1, vec3 p2, vec3 p3, float Brightness);
 	static void Triangle_uv(vec3 p1, vec3 p2, vec3 p3, vec2* uv, char tex_code, float Brightness);
-	static void Quad(vec3 p1, vec3 p2, vec3 p3, vec3 p4, char character);
-	static void Quad(vec3* p, char character);
+	static void Quad(vec3 p1, vec3 p2, vec3 p3, vec3 p4, float Brightness);
+	static void Quad(vec3* p, float Brightness);
 	static void Quad_uv(vec3* p, char tex_code, float Brightness);
 	static void Quad_uv(vec3 p1, vec3 p2, vec3 p3, vec3 p4, char tex_code, float Brightnes);
-	static void Circle(vec2 position, float r, char character);
+	static void Circle(vec3 position, float r, char character);
 };
 
 inline void Draw::Quad_uv(vec3* p, char tex_code, float Brightness) //use 4 points
@@ -43,15 +43,15 @@ inline void Draw::Quad_uv(vec3 p1, vec3 p2, vec3 p3, vec3 p4, char tex_code, flo
 	Triangle_uv(p1, p3, p4, uv2, tex_code, Brightness);
 }
 
-inline void Draw::Quad(vec3 p1, vec3 p2, vec3 p3, vec3 p4, char character)
+inline void Draw::Quad(vec3 p1, vec3 p2, vec3 p3, vec3 p4, float Brightness)
 {
-	Triangle(p1, p2, p3, character);
-	Triangle(p1, p3, p4, character);
+	Triangle(p1, p2, p3, Brightness);
+	Triangle(p1, p3, p4, Brightness);
 }
-inline void Draw::Quad(vec3* p, char character)
+inline void Draw::Quad(vec3* p, float Brightness)
 {
-	Triangle(p[0], p[1], p[2], character);
-	Triangle(p[0], p[2], p[3], character);
+	Triangle(p[0], p[1], p[2], Brightness);
+	Triangle(p[0], p[2], p[3], Brightness);
 }
 
 inline void Draw::Triangle_uv(vec3 p1, vec3 p2, vec3 p3, vec2* uv, char tex_code, float Brightness)
@@ -101,7 +101,6 @@ inline void Draw::Triangle_uv(vec3 p1, vec3 p2, vec3 p3, vec2* uv, char tex_code
 			w3 = ((float(posY) - p2.y) * (p1.x - p2.x) - (float(posX) - p2.x) * (p1.y - p2.y)) /
 				((p3.y - p2.y) * (p1.x - p2.x) - (p3.x - p2.x) * (p1.y - p2.y));
 			w1 = 1 - w2 - w3;
-
 			//float interpolated_z = (z_formula(p1.z) * w1 + z_formula(p2.z) * w2 + z_formula(p3.z) * w3);
 			float interpolated_z = (p1.z * w1 + p2.z * w2 + p3.z * w3);
 			vec3 pixel_position = vec3(posX, posY, z_formula(interpolated_z));//adds non linear z_buffer for precision
@@ -117,19 +116,18 @@ inline void Draw::Triangle_uv(vec3 p1, vec3 p2, vec3 p3, vec2* uv, char tex_code
 	}
 }
 
-inline void Draw::Triangle(vec3 p1, vec3 p2, vec3 p3, char c) //RASTERIZER using barycentric coordinates
+inline void Draw::Triangle(vec3 p1, vec3 p2, vec3 p3, float Brightness) //RASTERIZER using barycentric coordinates
 {
 	//Normalizing coordinates from -1 to 1 in x and y axis
 	static float half_screen_w = (Get().screen_w / 2);
 	static float half_screen_h = (Get().screen_h / 2);
-	static float normalized_screen_width = half_screen_w * (float(Get().screen_h) / float(Get().screen_w));
+	static float normalized_screen_width = half_screen_w / Get().aspect_ratio;
 	p1.x = p1.x * normalized_screen_width + half_screen_w;
 	p1.y = p1.y * half_screen_h + half_screen_h;
 	p2.x = p2.x * normalized_screen_width + half_screen_w;
 	p2.y = p2.y * half_screen_h + half_screen_h;
 	p3.x = p3.x * normalized_screen_width + half_screen_w;
 	p3.y = p3.y * half_screen_h + half_screen_h;
-
 
 	int min_x = std::min(std::min(p1.x, p2.x), p3.x);
 	int min_y = std::min(std::min(p1.y, p2.y), p3.y);
@@ -153,21 +151,35 @@ inline void Draw::Triangle(vec3 p1, vec3 p2, vec3 p3, char c) //RASTERIZER using
 			float interpolated_z = (p1.z * w1 + p2.z * w2 + p3.z * w3);
 			vec3 pixel_position = vec3(posX, posY, z_formula(interpolated_z));
 			if (!(w1 >= -0 && w1 <= 1 && w2 >= -0 && w2 <= 1 && w3 >= -0 && w3 <= 1))continue;
-			Get().SetPixel(pixel_position, c);
+			Get().SetPixel(pixel_position, GetGradient(Brightness));
 		}
 	}
 }
 
 
-inline void Draw::Circle(vec2 position, float r, char character)
+inline void Draw::Circle(vec3 p, float r, char character)
 {
-	int min_x = position.x - r;
-	int min_y = position.y - r;
-	int max_x = position.x + r;
-	int max_y = position.y + r;
+	static float half_screen_w = (Get().screen_w / 2);
+	static float half_screen_h = (Get().screen_h / 2);
+	static float normalized_screen_width = half_screen_w / Get().aspect_ratio;
+	p.x = p.x * normalized_screen_width + half_screen_w;
+	p.y = p.y * half_screen_h + half_screen_h;
+
+
+	int min_x = p.x - r;
+	int min_y = p.y - r;
+	int max_x = p.x + r;
+	int max_y = p.y + r;
+	if (min_x < 0) min_x = 0;
+	if (min_y < 0) min_y = 0;
+	if (max_x > Terminal3D::GetScreenWidth()) max_x = Terminal3D::GetScreenWidth();
+	if (max_y > Terminal3D::GetScreenHeight()) max_y = Terminal3D::GetScreenHeight();
 	for (int y = min_y; y <= max_y; y++)
 		for (int x = min_x; x <= max_x; x++)
-			if ((vec2(x, y) - position).mag() <= r)
-				Terminal3D::SetPixel(vec3(x, y, 0), character);
+		{
+			vec2 d = (vec2(x, y) - vec2(p.x, p.y));
+			if ((d.x * d.x)*Get().aspect_ratio + d.y * d.y < r * r)
+				Terminal3D::SetPixel(vec3(x, y, p.z), character);
+		}
 }
 

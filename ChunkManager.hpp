@@ -58,7 +58,7 @@ class ChunkManager
 public:
 	ChunkManager(int distance) : map_length(distance), map_size(distance * distance * distance) 
 	{
-		Terminal3D::Add_Texture_ppm(1, "src/Textures/oak_planks1.ppm");;
+		Terminal3D::Add_Texture_ppm(1, "src/Textures/birch_planks1.ppm");;
 		chunks = new Chunk[map_size];
 	}
 	~ChunkManager() { delete[] chunks; }
@@ -73,7 +73,7 @@ public:
 	void MeshAdjacentBlocks(int block_x, int block_y, int block_z);
 
 	//I use this for raycasting 
-	void Render(Camera3D camera, float Brightness);
+	void Render(Camera3D camera, float Brightness, vec3 sun_position);
 };
 
 inline bool ChunkManager::does_block_exist(int block_x, int block_y, int block_z)
@@ -112,6 +112,9 @@ inline unsigned char ChunkManager::GetBlock(int block_x, int block_y, int block_
 	int x = block_x % CHUNK_LENGTH;
 	int y = block_y % CHUNK_LENGTH;
 	int z = block_z % CHUNK_LENGTH;
+	x = x < 0 ? CHUNK_LENGTH + x : x;
+	y = y < 0 ? CHUNK_LENGTH + y : y;
+	z = z < 0 ? CHUNK_LENGTH + z : z;
 	return chunk.GetBlock(x, y, z);
 }
 inline Block& ChunkManager::GetBlock_r(int block_x, int block_y, int block_z)
@@ -131,6 +134,9 @@ inline Block& ChunkManager::GetBlock_r(int block_x, int block_y, int block_z)
 	int x = block_x % CHUNK_LENGTH;
 	int y = block_y % CHUNK_LENGTH;
 	int z = block_z % CHUNK_LENGTH;
+	x = x < 0 ? CHUNK_LENGTH + x : x;
+	y = y < 0 ? CHUNK_LENGTH + y : y;
+	z = z < 0 ? CHUNK_LENGTH + z : z;
 	return chunk.GetBlock_r(x, y, z);
 }
 inline void ChunkManager::AddChunk(int chunk_x, int chunk_y, int chunk_z)
@@ -212,21 +218,26 @@ inline void ChunkManager::MeshAdjacentBlocks(int block_x, int block_y, int block
 					MeshBlock(block_x+x, block_y+y, block_z+z);
 }
 
-inline void ChunkManager::Render(Camera3D camera, float Brightness)
+inline void ChunkManager::Render(Camera3D camera, float Brightness, vec3 sun_position)
 {
-
-	const float Face_Brightness[] =
-	{
-		0.8,0.7,0.6,0.95,0.5,1
-	};
+	vec3 sun_dir = sun_position.Normalize();
 	vec3 block_normals[]
 	{
 		vec3(0,0,-1),
-		vec3(1,0,0),
-		vec3(0,0,1),
+		vec3(1,0,0)	,
+		vec3(0,0,1) ,
 		vec3(-1,0,0),
 		vec3(0,-1,0),
-		vec3(0,1,0),
+		vec3(0,1,0) ,
+	};
+	float Face_Brightness[] =
+	{
+		Brightness * ((2 + sun_dir.dot(vec3(0, 0,-1))) / 2),
+		Brightness * ((2 + sun_dir.dot(vec3(1, 0, 0))) / 2),
+		Brightness * ((2 + sun_dir.dot(vec3(0, 0, 1))) / 2),
+		Brightness * ((2 + sun_dir.dot(vec3(-1, 0,0))) / 2),
+		Brightness * ((2 + sun_dir.dot(vec3(0,-1, 0))) / 2),
+		(Brightness + 0.1) * (2 + sun_dir.dot(vec3(0, 1, 0))) / 2
 	};
 
 	for (int i = 0; i < map_size; i++)
@@ -238,6 +249,7 @@ inline void ChunkManager::Render(Camera3D camera, float Brightness)
 		int block_y = chunk.chunk_y * CHUNK_LENGTH;
 		int block_z = chunk.chunk_z * CHUNK_LENGTH;
 
+		int block[3][3][4][7];
 
 
 		for (int y = 0; y < CHUNK_LENGTH; y++)
@@ -256,7 +268,7 @@ inline void ChunkManager::Render(Camera3D camera, float Brightness)
 							Cube::data[i * 4 + 2],
 							Cube::data[i * 4 + 3]
 						};
-						Draw3D::Plain_uv(position, vertices, 1, Face_Brightness[i] * Brightness, camera);
+						Draw3D::Plain_uv(position, vertices, 1, Face_Brightness[i], camera);
 					}
 				}
 	
