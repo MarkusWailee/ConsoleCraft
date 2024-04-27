@@ -58,7 +58,26 @@ class ChunkManager
 public:
 	ChunkManager(int distance) : map_length(distance), map_size(distance * distance * distance) 
 	{
-		Terminal3D::Add_Texture_ppm(1, "src/Textures/birch_planks1.ppm");;
+		//Grass
+		Terminal3D::Add_Texture_ppm(1, "src/Textures/grass_block_side.ppm");
+		Terminal3D::Add_Texture_ppm(2, "src/Textures/grass_block_top.ppm");
+		Terminal3D::Add_Texture_ppm(3, "src/Textures/dirt.ppm");
+		//Cobble
+		Terminal3D::Add_Texture_ppm(4, "src/Textures/cobblestone.ppm");
+		//oad_plank
+		Terminal3D::Add_Texture_ppm(5, "src/Textures/oak_planks.ppm");
+		//oak_log
+		Terminal3D::Add_Texture_ppm(6, "src/Textures/oak_log.ppm");
+		Terminal3D::Add_Texture_ppm(7, "src/Textures/oak_log_top.ppm");
+		//crafting table
+		Terminal3D::Add_Texture_ppm(8, "src/Textures/crafting_table_side.ppm");
+		Terminal3D::Add_Texture_ppm(9, "src/Textures/crafting_table_front.ppm");
+		Terminal3D::Add_Texture_ppm(10, "src/Textures/crafting_table_top.ppm");
+
+		//furnace
+		Terminal3D::Add_Texture_ppm(11, "src/Textures/furnace_front.ppm");
+		Terminal3D::Add_Texture_ppm(12, "src/Textures/furnace_side.ppm");
+		Terminal3D::Add_Texture_ppm(13, "src/Textures/furnace_top.ppm");
 		chunks = new Chunk[map_size];
 	}
 	~ChunkManager() { delete[] chunks; }
@@ -221,15 +240,6 @@ inline void ChunkManager::MeshAdjacentBlocks(int block_x, int block_y, int block
 inline void ChunkManager::Render(Camera3D camera, float Brightness, vec3 sun_position)
 {
 	vec3 sun_dir = sun_position.Normalize();
-	vec3 block_normals[]
-	{
-		vec3(0,0,-1),
-		vec3(1,0,0)	,
-		vec3(0,0,1) ,
-		vec3(-1,0,0),
-		vec3(0,-1,0),
-		vec3(0,1,0) ,
-	};
 	float Face_Brightness[] =
 	{
 		Brightness * ((2 + sun_dir.dot(vec3(0, 0,-1))) / 2),
@@ -237,7 +247,7 @@ inline void ChunkManager::Render(Camera3D camera, float Brightness, vec3 sun_pos
 		Brightness * ((2 + sun_dir.dot(vec3(0, 0, 1))) / 2),
 		Brightness * ((2 + sun_dir.dot(vec3(-1, 0,0))) / 2),
 		Brightness * ((2 + sun_dir.dot(vec3(0,-1, 0))) / 2),
-		(Brightness + 0.1) * (2 + sun_dir.dot(vec3(0, 1, 0))) / 2
+		(Brightness + 0.2) * ((2 + sun_dir.dot(vec3(0, 1, 0))) / 2)
 	};
 
 	for (int i = 0; i < map_size; i++)
@@ -248,8 +258,6 @@ inline void ChunkManager::Render(Camera3D camera, float Brightness, vec3 sun_pos
 		int block_x = chunk.chunk_x * CHUNK_LENGTH;
 		int block_y = chunk.chunk_y * CHUNK_LENGTH;
 		int block_z = chunk.chunk_z * CHUNK_LENGTH;
-
-		int block[3][3][4][7];
 
 
 		for (int y = 0; y < CHUNK_LENGTH; y++)
@@ -263,12 +271,12 @@ inline void ChunkManager::Render(Camera3D camera, float Brightness, vec3 sun_pos
 						vec3 position = vec3(x + block_x, y + block_y, z + block_z);
 						vec3 vertices[] =
 						{
-							Cube::data[i * 4 + 0],
-							Cube::data[i * 4 + 1],
-							Cube::data[i * 4 + 2],
-							Cube::data[i * 4 + 3]
+							Cube::vertice_data[i * 4 + 0],
+							Cube::vertice_data[i * 4 + 1],
+							Cube::vertice_data[i * 4 + 2],
+							Cube::vertice_data[i * 4 + 3]
 						};
-						Draw3D::Plain_uv(position, vertices, 1, Face_Brightness[i], camera);
+						Draw3D::Plain_uv(position, vertices, Cube::block_type[6 * block.block_type + i], Face_Brightness[i], camera);
 					}
 				}
 	

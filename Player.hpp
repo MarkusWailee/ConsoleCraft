@@ -8,6 +8,8 @@ struct Player : Camera3D
 {
 
 	void CastRay(ChunkManager& world, float FrameTime);
+private:
+	unsigned char block_selected = 1;
 };
 inline void Player::CastRay(ChunkManager& world, float FrameTime)
 {
@@ -31,10 +33,10 @@ inline void Player::CastRay(ChunkManager& world, float FrameTime)
 	{
 		vec3 vertices[] =
 		{
-			Cube::data[i * 4 + 0],
-			Cube::data[i * 4 + 1],
-			Cube::data[i * 4 + 2],
-			Cube::data[i * 4 + 3]
+			Cube::vertice_data[i * 4 + 0],
+			Cube::vertice_data[i * 4 + 1],
+			Cube::vertice_data[i * 4 + 2],
+			Cube::vertice_data[i * 4 + 3]
 		};
 		vec3 pos = p - Direction * 0.02;
 		//Draw3D::Plain(vec3(int(pos.x), int(pos.y), int(pos.z)), vertices, ']', Camera3D(position, view, Direction));
@@ -50,7 +52,7 @@ inline void Player::CastRay(ChunkManager& world, float FrameTime)
 		p -= Direction * 0.02;
 		if (world.does_block_exist(p.x, p.y, p.z))
 		{
-			world.GetBlock_r(int(p.x), int(p.y), int(p.z)).block_type = 1;
+			world.GetBlock_r(int(p.x), int(p.y), int(p.z)).block_type = block_selected;
 			world.MeshAdjacentBlocks(p.x, p.y, p.z);
 		}
 
@@ -68,5 +70,18 @@ inline void Player::CastRay(ChunkManager& world, float FrameTime)
 		}
 		place_time = 0;
 	}
+
+	if (GetAsyncKeyState(49) & 0x8000)
+		block_selected = 1;
+	if (GetAsyncKeyState(50) & 0x8000)
+		block_selected = 2;
+	if (GetAsyncKeyState(51) & 0x8000)
+		block_selected = 3;
+	if (GetAsyncKeyState(52) & 0x8000)
+		block_selected = 4;
+	if (GetAsyncKeyState(53) & 0x8000)
+		block_selected = 5;
+	if (GetAsyncKeyState(54) & 0x8000)
+		block_selected = 6;
 
 }

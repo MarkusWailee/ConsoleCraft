@@ -89,3 +89,28 @@ inline mat4 mat4::operator*(const mat4& m)
 		n[12] * m.n[0] + n[13] * m.n[4] + n[14] * m.n[8] + n[15] * m.n[12],  n[12] * m.n[1] + n[13] * m.n[5] + n[14] * m.n[9] + n[15] * m.n[13],  n[12] * m.n[2] + n[13] * m.n[6] + n[14] * m.n[10] + n[15] * m.n[14],	n[12] * m.n[3] + n[13] * m.n[7] + n[14] * m.n[11] + n[15] * m.n[15]
 	};
 }
+
+
+namespace mat
+{
+	inline mat3 GetRotY(float amount)
+	{
+		return mat3
+		{
+			cosf(amount), 0, sinf(amount),
+			0,1,0,
+			-sinf(amount), 0 ,cosf(amount)
+		};
+	}
+	
+	inline mat3 GetRotX(float amount)
+	{
+		return mat3
+		{
+			1,0,0,
+			0,cosf(amount), -sinf(amount),
+			0,sinf(amount), cosf(amount)
+		};
+	}
+
+}
