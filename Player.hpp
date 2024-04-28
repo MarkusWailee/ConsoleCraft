@@ -11,7 +11,7 @@ struct Player : Camera3D
 	void world_collision(ChunkManager& world);
 	void controls(float FrameTime);
 private:
-	bool is_flying = 0;
+	bool is_flying = 1;
 	bool on_ground = 0;
 	vec3 velocity;
 	unsigned char block_selected = 1;
@@ -22,7 +22,7 @@ inline void Player::cast_ray(ChunkManager& world, float FrameTime)
 {
 	vec3 p = position + vec3(0.5, 0.5, 0.5);
 	vec3 v = Direction;
-	for (int step = 0; step < 500; step++)
+	for (int step = 0; step < 400; step++)
 	{
 		if (world.GetBlock(p.x, p.y, p.z)) break;
 		float dx = v.x >= 0 ? (ceilf(p.x) - p.x) / v.x : (floorf(p.x) - p.x) / v.x;
@@ -58,25 +58,11 @@ inline void Player::cast_ray(ChunkManager& world, float FrameTime)
 		}
 		place_time = 0;
 	}
-
-	if (GetAsyncKeyState(49) & 0x8000)
-		block_selected = 1;
-	if (GetAsyncKeyState(50) & 0x8000)
-		block_selected = 2;
-	if (GetAsyncKeyState(51) & 0x8000)
-		block_selected = 3;
-	if (GetAsyncKeyState(52) & 0x8000)
-		block_selected = 4;
-	if (GetAsyncKeyState(53) & 0x8000)
-		block_selected = 5;
-	if (GetAsyncKeyState(54) & 0x8000)
-		block_selected = 6;
-
 }
 
 inline void Player::world_collision(ChunkManager& world)
 {
-	AABB player_AABB(position - vec3(0, 1, 0), 1.0f, 2.0f);
+	AABB player_AABB(position - vec3(0, 1, 0), 1.0f, 1.8f);
 
 	for (int y = position.y - 1; y < position.y + 1; y++)
 		for (int z = position.z - 1; z < position.z + 1; z++)
@@ -128,6 +114,22 @@ inline void Player::controls(float FrameTime)
 		 0,sinf(-view.y), cosf(-view.y),
 	};
 	Direction = RotY * RotX * vec3(0, 0, 1);
+	//Block Selection
+	if (GetAsyncKeyState(49) & 0x8000)
+		block_selected = 1;
+	if (GetAsyncKeyState(50) & 0x8000)
+		block_selected = 2;
+	if (GetAsyncKeyState(51) & 0x8000)
+		block_selected = 3;
+	if (GetAsyncKeyState(52) & 0x8000)
+		block_selected = 4;
+	if (GetAsyncKeyState(53) & 0x8000)
+		block_selected = 5;
+	if (GetAsyncKeyState(54) & 0x8000)
+		block_selected = 6;
+	if (GetAsyncKeyState(55) & 0x8000)
+		block_selected = 7;
+
 
 	//Camera movement windows users only
 	if (GetAsyncKeyState('W') & 0x8000)
@@ -141,7 +143,7 @@ inline void Player::controls(float FrameTime)
 	if (movement_direction.mag() > 1)
 		movement_direction = movement_direction.Normalize();
 	if (GetAsyncKeyState('C') & 0x8000)
-		velocity.y = -10;
+		velocity.y = -5;
 	if (GetAsyncKeyState(' ') & 0x8000 && (on_ground || is_flying))
 	{
 		velocity.y = 6;
@@ -165,6 +167,8 @@ inline void Player::controls(float FrameTime)
 
 	if(!is_flying)
 		velocity.y -= 15 * FrameTime;
+	else
+		velocity.y -= friction * velocity.y * FrameTime;
 
 	velocity.x -= friction * velocity.x * FrameTime;
 	velocity.z -= friction * velocity.z * FrameTime;

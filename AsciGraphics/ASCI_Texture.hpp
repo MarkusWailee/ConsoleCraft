@@ -13,6 +13,7 @@ inline float Clampf(float value, float min, float max)
 inline char GetGradient(float Brightness)
 {
 	const static std::string ASCI_GRADIENT = " .:'-~=<\*({[%08O#@Q&";
+	//const static std::string ASCI_GRADIENT = " .,*#jH@OQ";
 	Brightness = Clampf(Brightness, 0, 0.99);
 	return ASCI_GRADIENT[ASCI_GRADIENT.size() * Brightness];
 }

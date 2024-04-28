@@ -9,6 +9,8 @@ int main()
 {
 	//window initialization
 	Terminal3D::Init(460,320,float(4)/2.1, 'Q');
+	std::cout << "\033[1;37m";//white
+	//Terminal3D::Init(900, 480, float(4) / 2.1, 'Q');
 
 	Player camera;
 
@@ -29,13 +31,13 @@ int main()
 			for (int chunk_x = -offset; chunk_x < map_length - offset; chunk_x++)
 				n.MeshChunk(chunk_x, chunk_y, chunk_z);
 
+	n.PlaceTree(15, get_height_map(15, 40), 40);
+
 	float Global_Brightness = 0;
 	vec3 sun_pos = vec3(1,1,1);
 
 
 	//Game Logic
-	std::cout << "\033[1;37m";
-	//std::cout << "\033[0m";
 
 
 	std::thread([&]
@@ -46,7 +48,7 @@ int main()
 		{
 			Game_Time.HandleTime();
 			Global_Brightness = (sun_pos.y + 50 )/100 + 0.1;
-			sun_pos = mat::GetRotY(Game_Time.GetTime() * 0.2) * mat::GetRotX(0.5) * vec3(10, 0, -50);
+			sun_pos = mat::GetRotY(0.5) * mat::GetRotX(1) * vec3(10, 0, -50);
 			Terminal3D::ChangeBackbuffer(GetGradient(Global_Brightness*0.8));
 
 			//Terminal3D::ChangeBackbuffer(' ');

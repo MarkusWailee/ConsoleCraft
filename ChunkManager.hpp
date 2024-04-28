@@ -78,6 +78,11 @@ public:
 		Terminal3D::Add_Texture_ppm(11, "src/Textures/furnace_front.ppm");
 		Terminal3D::Add_Texture_ppm(12, "src/Textures/furnace_side.ppm");
 		Terminal3D::Add_Texture_ppm(13, "src/Textures/furnace_top.ppm");
+
+		//leaves
+		Terminal3D::Add_Texture_ppm(14, "src/Textures/oak_leaves.ppm");
+		Cube::init_tree();
+
 		chunks = new Chunk[map_size];
 	}
 	~ChunkManager() { delete[] chunks; }
@@ -90,7 +95,7 @@ public:
 	void MeshChunk(int chunk_x, int chunk_y, int chunk_z);
 	void MeshBlock(int block_x, int block_y, int block_z);
 	void MeshAdjacentBlocks(int block_x, int block_y, int block_z);
-
+	void PlaceTree(int x, int y, int z);
 	//I use this for raycasting 
 	void Render(Camera3D camera, float Brightness, vec3 sun_position);
 };
@@ -235,6 +240,18 @@ inline void ChunkManager::MeshAdjacentBlocks(int block_x, int block_y, int block
 			for (int x = -1; x <= 1; x++)
 				if(does_block_exist(block_x + x, block_y + y, block_z+z))
 					MeshBlock(block_x+x, block_y+y, block_z+z);
+}
+inline void ChunkManager::PlaceTree(int x, int y, int z)
+{
+	for (int i = 0; i < Cube::tree_assemble.size(); i++)
+	{
+		vec3 p = Cube::tree_blocks[i] + vec3(x, y, z);
+		if (does_block_exist(p.x, p.y, p.z))
+		{
+			GetBlock_r(p.x, p.y, p.z) = Cube::tree_assemble[i];
+			MeshAdjacentBlocks(p.x, p.y, p.z);
+		}
+	}
 }
 
 inline void ChunkManager::Render(Camera3D camera, float Brightness, vec3 sun_position)

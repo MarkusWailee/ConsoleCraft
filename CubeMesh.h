@@ -5,6 +5,35 @@
 //This is the order I render the voxels
 namespace Cube
 {
+
+	std::vector<vec3> tree_blocks = {};
+	std::vector<unsigned char> tree_assemble = {};
+	inline void init_tree()
+	{
+		vec3 base = vec3(0,0,0);
+
+		for (int y = 4; y <= 8; y++)
+			for (int z = -2; z <= 2; z++)
+				for (int x = -2; x <= 2; x++)
+				{
+					if (x * x + z * z + (y-5) * (y-5)< 6 || y<6)
+					{
+						tree_blocks.push_back(vec3(x, y, z));
+						tree_assemble.push_back(7);
+
+					}
+				}
+		for (int i = 0; i <= 3; i++)
+		{
+			tree_blocks.push_back(base + vec3(0,i,0));
+			tree_assemble.push_back(4);
+		}
+	}
+
+		
+
+
+
 	const std::vector<unsigned int> block_type =
 	{
 		//air 
@@ -26,7 +55,10 @@ namespace Cube
 		9,8,9,8,10,10,
 
 		//furnace 6
-		11,12,12,12, 13,13
+		11,12,12,12,13,13,
+
+		//oak leaves
+		14,14,14,14,14,14
 
 	};
 
