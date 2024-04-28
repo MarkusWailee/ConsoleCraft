@@ -31,7 +31,13 @@ int main()
 			for (int chunk_x = -offset; chunk_x < map_length - offset; chunk_x++)
 				n.MeshChunk(chunk_x, chunk_y, chunk_z);
 
-	n.PlaceTree(15, get_height_map(15, 40), 40);
+	//for(int i = 0;)
+	for (int i = 0; i < 50; i++)
+	{
+		int x = rand() % (map_length * CHUNK_LENGTH + 4);
+		int z = rand() % (map_length * CHUNK_LENGTH + 3);
+		n.PlaceTree(x, get_height_map(x, z), z);
+	}
 
 	float Global_Brightness = 0;
 	vec3 sun_pos = vec3(1,1,1);
