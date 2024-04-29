@@ -2,6 +2,7 @@
 #include <math.h>
 #include <iostream>
 
+
 inline float get_height_map(int x, int z)
 {
 	return 16 + 8 * (sinf(float(z) / 20 + sinf(float(z) / 20)) + 2 * sinf(float(x) / 30 + sinf(float(x) / 20)));

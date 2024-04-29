@@ -12,12 +12,14 @@
 const int CHUNK_LENGTH = 8;
 const int CHUNK_SIZE = CHUNK_LENGTH * CHUNK_LENGTH * CHUNK_LENGTH;
 
+
+
 struct Block
 {
 	//specifies which face to render
 	Block(){}
 	Block(unsigned char Block_Type) : block_type(Block_Type) {};
-	bool face[6] = {}; 
+	bool face[6] = {};
 	unsigned char block_type = 0;
 };
 

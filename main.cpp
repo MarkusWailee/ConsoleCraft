@@ -14,7 +14,8 @@ int main()
 
 	Player camera;
 
-	camera.position = vec3(8, 32, 8);
+	camera.position = vec3(32, get_height_map(32,32), 32);
+
 
 
 	//Temporary World Generation
