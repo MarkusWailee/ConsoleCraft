@@ -4,18 +4,17 @@
 #include <fstream>
 
 
-inline float Clampf(float value, float min, float max)
+inline float clampf(float value, float min, float max)
 {
 	if (value > max) return max;
 	if (value < min) return min;
 	return value;
 }
-inline char GetGradient(float Brightness)
+inline char get_asci_gradient(float Brightness)
 {
-	const static std::string ASCI_GRADIENT = " .:'-~=<\*({[%08O#@Q&";
-	//const static std::string ASCI_GRADIENT = " .,*#jH@OQ";
-	Brightness = Clampf(Brightness, 0, 0.99);
-	return ASCI_GRADIENT[ASCI_GRADIENT.size() * Brightness];
+	const char* ASCI_GRADIENT = " .:'-~=<\*({[%08O#@Q&";
+	Brightness = clampf(Brightness, 0, 0.99);
+	return ASCI_GRADIENT[int(strlen(ASCI_GRADIENT) * Brightness)];
 }
 
 struct ASCI_Texture
@@ -23,14 +22,13 @@ struct ASCI_Texture
 	unsigned char* data = NULL;
 	int width = 0;
 	int height = 0;
-	char GetCoord(int x, int y, float Brightness)
+	char get_coord(int x, int y, float Brightness)
 	{
-		if (Brightness > 0.99) Brightness = 0.99;
-		if (Brightness < 0) Brightness = 0;
-		const static float max_value = 1.0f / 255.0f;
+		Brightness = clampf(Brightness, 0, 0.99);
+		constexpr float max_value = 1.0f / 255.0f;
 		if (x < 0 || x >= width || y < 0 || y >= height) return '?';
 		int offset = x + (height-y-1) * width;
-		return GetGradient(data[offset] * max_value * Brightness);
+		return get_asci_gradient(data[offset] * max_value * Brightness);
 	}
 	ASCI_Texture(){}
 	~ASCI_Texture() { delete[] data; }
@@ -42,7 +40,7 @@ protected:
 	ASCI_Texture textures[128];
 	ASCI_TextureManager(){}
 public:
-	void add_texture(char tex_code, unsigned char* tex_data,const int width, const int height)
+	void add_texture_i(char tex_code, unsigned char* tex_data,const int width, const int height)
 	{
 		//Im assigning letters to each texture;
 		ASCI_Texture& tex = textures[tex_code];
@@ -55,7 +53,7 @@ public:
 		tex.width = width;
 		tex.height = height;
 	}
-	void add_texture_ppm(char tex_code, std::string file_name)
+	void add_texture_ppm_i(char tex_code, std::string file_name)
 	{
 		
 		//std::string ASCI_Gradient = " .:-~=+*%08O#@Q";
@@ -101,7 +99,7 @@ public:
 		}
 		Image.close();
 	}
-	ASCI_Texture& get_texture(char tex_code)
+	ASCI_Texture& get_texture_i(char tex_code)
 	{
 		return textures[tex_code];
 	}

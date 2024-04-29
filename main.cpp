@@ -8,13 +8,13 @@
 int main()
 {
 	//window initialization
-	Terminal3D::Init(460,320,float(4)/2.1, 'Q');
+	//Terminal3D::init(460,320,float(4)/2.1, 'Q');
 	std::cout << "\033[1;37m";//white
-	//Terminal3D::Init(900, 480, float(4) / 2.1, 'Q');
+	Terminal3D::init(200, 160, float(4) / 2.1, 'Q');
 
 	Player camera;
 
-	camera.position = vec3(32, get_height_map(32,32), 32);
+	camera.position = vec3(32, get_height_map(32,32) + 1, 32);
 
 
 
@@ -25,19 +25,19 @@ int main()
 	for (int chunk_y = - offset; chunk_y < map_length - offset; chunk_y++)
 		for (int chunk_z = -offset; chunk_z < map_length - offset; chunk_z++)
 			for (int chunk_x = -offset; chunk_x < map_length - offset; chunk_x++)
-				n.AddChunk(chunk_x, chunk_y, chunk_z);
+				n.add_block(chunk_x, chunk_y, chunk_z);
 
 	for (int chunk_y = - offset; chunk_y < map_length - offset; chunk_y++)
 		for (int chunk_z = -offset; chunk_z < map_length - offset; chunk_z++)
 			for (int chunk_x = -offset; chunk_x < map_length - offset; chunk_x++)
-				n.MeshChunk(chunk_x, chunk_y, chunk_z);
+				n.mesh_chunk(chunk_x, chunk_y, chunk_z);
 
 	//for(int i = 0;)
 	for (int i = 0; i < 50; i++)
 	{
 		int x = rand() % (map_length * CHUNK_LENGTH + 4);
 		int z = rand() % (map_length * CHUNK_LENGTH + 3);
-		n.PlaceTree(x, get_height_map(x, z), z);
+		n.place_tree(x, get_height_map(x, z), z);
 	}
 
 	float Global_Brightness = 0;
@@ -57,7 +57,7 @@ int main()
 			Global_Brightness = (sun_pos.y + 50 )/100 + 0.1;
 			sun_pos = mat::GetRotY(0.5) * mat::GetRotX(1) * vec3(10, 0, -50);
 			//sun_pos = mat::GetRotY(0.5) * mat::GetRotX(Game_Time.GetTime() * 0.2) * vec3(10, 0, -50);
-			Terminal3D::ChangeBackbuffer(GetGradient(Global_Brightness*0.8));
+			Terminal3D::change_background(get_asci_gradient(Global_Brightness*0.8));
 
 			//Terminal3D::ChangeBackbuffer(' ');
 			camera.controls(Game_Time.GetFrameTime());
@@ -71,16 +71,16 @@ int main()
 	while (true)
 	{
 		Render_Time.HandleTime();
-		//Render_Time.ShowFPS();
-		n.Render(camera, Clampf(Global_Brightness, 0.4, 0.60), sun_pos);
-		Draw::Circle(vec3(0,0,0), 1, ' ');
+		Render_Time.ShowFPS();
+		n.render(camera, clampf(Global_Brightness, 0.4, 0.60), sun_pos);
+		Draw::circle(vec3(0,0,0), 1, ' ');
 
 		
-		Draw3D::Sun(sun_pos, 7, 1, camera);
+		Draw3D::sun(sun_pos, 7, 1, camera);
 
-		Terminal3D::Render();
-		Terminal3D::ClearBuffer();
+		Terminal3D::render();
+		Terminal3D::clear_buffer();
 	}
-	Terminal3D::Terminate();
+	Terminal3D::terminate();
 }
 

@@ -8,15 +8,15 @@
 class Draw3D : Draw
 {
 public:
-	static void Plain_uv(const vec3 position, const vec3* vertices4, char tex_code, float Brightness, Camera3D camera);
-	static void Plain(const vec3 position, const vec3* vertices4, float Brightness, Camera3D camera);
-	static void Cube(const vec3 position, float size, float Brightness, Camera3D camera);
+	static void plain_uv(const vec3 position, const vec3* vertices4, char tex_code, float Brightness, Camera3D camera);
+	static void plain(const vec3 position, const vec3* vertices4, float Brightness, Camera3D camera);
+	static void cube(const vec3 position, float size, float Brightness, Camera3D camera);
 
 	//Minecraft function
-	static void Sun(vec3 position, float size, float Brightness, Camera3D camera);
+	static void sun(vec3 position, float size, float Brightness, Camera3D camera);
 };
 
-inline void Draw3D::Plain_uv(vec3 position, const vec3* vertices4, char tex_code, float Brightness, Camera3D camera)
+inline void Draw3D::plain_uv(vec3 position, const vec3* vertices4, char tex_code, float Brightness, Camera3D camera)
 {
 	vec3 quad_vertices[4];
 	for (int i = 0; i < 4; i++)
@@ -32,10 +32,10 @@ inline void Draw3D::Plain_uv(vec3 position, const vec3* vertices4, char tex_code
 		quad_vertices[i] = vertice;
 	}
 	//Render 2D vertices
-	Quad_uv(quad_vertices, tex_code, Brightness);
+	quad_uv(quad_vertices, tex_code, Brightness);
 }
 
-inline void Draw3D::Plain(const vec3 position, const vec3* vertices4, float Brightness, Camera3D camera)
+inline void Draw3D::plain(const vec3 position, const vec3* vertices4, float Brightness, Camera3D camera)
 {
 	vec3 quad_vertices[4];
 	for (int i = 0; i < 4; i++)
@@ -48,10 +48,10 @@ inline void Draw3D::Plain(const vec3 position, const vec3* vertices4, float Brig
 		if (vertice.z < 0)return;
 		quad_vertices[i] = vertice;
 	}
-	Quad(quad_vertices, Brightness);
+	quad(quad_vertices, Brightness);
 }
 
-inline void Draw3D::Cube(const vec3 position, float size, float Brightness, Camera3D camera)
+inline void Draw3D::cube(const vec3 position, float size, float Brightness, Camera3D camera)
 {
 	vec3 v[] =
 	{
@@ -73,20 +73,20 @@ inline void Draw3D::Cube(const vec3 position, float size, float Brightness, Came
 		v[i] = vec3(v[i].x / v[i].z, v[i].y / v[i].z, v[i].z);
 		if (v[i].z < 0)return;
 	}
-	Quad(v[0], v[1], v[2], v[3], Brightness*1);
-	Quad(v[1], v[2], v[6], v[5], Brightness*1);
-	Quad(v[0], v[3], v[7], v[4], Brightness*1);
-	Quad(v[4], v[5], v[6], v[7], Brightness*1);
-	Quad(v[3], v[2], v[6], v[7], Brightness*1);
-	Quad(v[0], v[1], v[5], v[4], Brightness*1);
+	quad(v[0], v[1], v[2], v[3], Brightness*1);
+	quad(v[1], v[2], v[6], v[5], Brightness*1);
+	quad(v[0], v[3], v[7], v[4], Brightness*1);
+	quad(v[4], v[5], v[6], v[7], Brightness*1);
+	quad(v[3], v[2], v[6], v[7], Brightness*1);
+	quad(v[0], v[1], v[5], v[4], Brightness*1);
 }
 
-inline void Draw3D::Sun(vec3 position, float size, float Brightness, Camera3D camera)
+inline void Draw3D::sun(vec3 position, float size, float Brightness, Camera3D camera)
 {
 	//position -= camera.position;
 	position = camera.RotXAxis() * camera.RotYAxis() * position;
 	position = vec3(position.x / position.z, position.y / position.z, position.z);
 	if (position.z < 0)return;
-	Draw::Circle(vec3(position.x, position.y, 1), size, GetGradient(Brightness));
+	Draw::circle(vec3(position.x, position.y, 1), size, get_asci_gradient(Brightness));
 
 }

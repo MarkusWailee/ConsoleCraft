@@ -10,19 +10,19 @@ class Terminal3D : ASCI_TextureManager
 	friend class Draw;//to access private members
 	Terminal3D() {};
 public:
-	static void ChangeBackbuffer(char character);
-	static void Add_Texture(const char tex_code, unsigned char* tex_data, const int width, const int height) { Get().add_texture(tex_code, tex_data, width, height); }
-	static void Add_Texture_ppm(const char tex_code, std::string file_name) { Get().add_texture_ppm(tex_code, file_name); }
-	static ASCI_Texture& Get_texture(char tex_code) { Get().get_texture(tex_code); }
-	static void Init(int ScreenWidth, int ScreenHeight, char background_character);
-	static void Init(int ScreenWidth, int ScreenHeight, float aspect_ratio, char background_character);
-	static void ClearBuffer();
-	static void Render() { std::cout << "\x1B[H" << Get().front_buffer; }
-	static void SetPixel(vec3 position, char character);
-	static int GetScreenWidth() { return Get().screen_w; }
-	static int GetScreenHeight() { return Get().screen_h; }
-	static float GetAspectRatio() { return Get().aspect_ratio; }
-	static void Terminate()
+	static void change_background(char character);
+	static void add_texture(const char tex_code, unsigned char* tex_data, const int width, const int height) { Get().add_texture_i(tex_code, tex_data, width, height); }
+	static void add_texture_ppm(const char tex_code, std::string file_name) { Get().add_texture_ppm_i(tex_code, file_name); }
+	static ASCI_Texture& get_texture(char tex_code) { Get().get_texture_i(tex_code); }
+	static void init(int ScreenWidth, int ScreenHeight, char background_character);
+	static void init(int ScreenWidth, int ScreenHeight, float aspect_ratio, char background_character);
+	static void clear_buffer();
+	static void render() { std::cout << "\x1B[H" << Get().front_buffer; }
+	static void set_pixel(vec3 position, char character);
+	static int get_screen_width() { return Get().screen_w; }
+	static int get_screen_height() { return Get().screen_h; }
+	static float get_aspect_ratio() { return Get().aspect_ratio; }
+	static void terminate()
 	{
 		delete[] Get().z_back_buffer;
 		delete[] Get().z_front_buffer;
@@ -45,17 +45,17 @@ protected:
 	static Terminal3D& Get() { static Terminal3D instance; return instance; };
 };
 
-inline void Terminal3D::Init(int ScreenWidth, int ScreenHeight, char background_character)
+inline void Terminal3D::init(int ScreenWidth, int ScreenHeight, char background_character)
 {
 	Get().aspect_ratio = float(ScreenWidth) / ScreenHeight;
 	Get().init_i(ScreenWidth, ScreenHeight, background_character); 
 };
-inline void Terminal3D::Init(int ScreenWidth, int ScreenHeight, float aspect_ratio, char background_character)
+inline void Terminal3D::init(int ScreenWidth, int ScreenHeight, float aspect_ratio, char background_character)
 {
 	Get().aspect_ratio = aspect_ratio;
 	Get().init_i(ScreenWidth, ScreenHeight, background_character);
 };
-inline void Terminal3D::ClearBuffer()
+inline void Terminal3D::clear_buffer()
 {
 	//clears both zbuffer and front char buffer
 	std::memcpy(Get().z_front_buffer, Get().z_back_buffer, Get().PIXEL_COUNT * sizeof(float));
@@ -85,7 +85,7 @@ inline void Terminal3D::init_i(int ScreenWidth, int ScreenHeight, char backgroun
 	std::fill_n(z_back_buffer, PIXEL_COUNT, 1);
 	std::memcpy(z_front_buffer, z_back_buffer, PIXEL_COUNT * sizeof(float));
 }
-inline void Terminal3D::SetPixel(vec3 position, char character)
+inline void Terminal3D::set_pixel(vec3 position, char character)
 {
 	int x = position.x;
 	int y = Get().screen_h - position.y;//invert the y value
@@ -101,7 +101,7 @@ inline void Terminal3D::SetPixel(vec3 position, char character)
 	Get().front_buffer[front_buffer_offset2] = character;
 }
 
-inline void Terminal3D::ChangeBackbuffer(char character)
+inline void Terminal3D::change_background(char character)
 {
 	static char old_character = -1;
 	if (old_character == character)return;

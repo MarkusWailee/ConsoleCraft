@@ -11,7 +11,7 @@ struct Player : Camera3D
 	void world_collision(ChunkManager& world);
 	void controls(float FrameTime);
 private:
-	bool is_flying = 1;
+	bool is_flying = 0;
 	bool on_ground = 0;
 	vec3 velocity;
 	unsigned char block_selected = 1;
@@ -24,7 +24,7 @@ inline void Player::cast_ray(ChunkManager& world, float FrameTime)
 	vec3 v = Direction;
 	for (int step = 0; step < 400; step++)
 	{
-		if (world.GetBlock(p.x, p.y, p.z)) break;
+		if (world.get_block(p.x, p.y, p.z)) break;
 		float dx = v.x >= 0 ? (ceilf(p.x) - p.x) / v.x : (floorf(p.x) - p.x) / v.x;
 		float dy = v.y >= 0 ? (ceilf(p.y) - p.y) / v.y : (floorf(p.y) - p.y) / v.y;
 		float dz = v.z >= 0 ? (ceilf(p.z) - p.z) / v.z : (floorf(p.z) - p.z) / v.z;
@@ -41,8 +41,8 @@ inline void Player::cast_ray(ChunkManager& world, float FrameTime)
 		p -= Direction * 0.02;
 		if (world.does_block_exist(p.x, p.y, p.z))
 		{
-			world.GetBlock_r(int(p.x), int(p.y), int(p.z)).block_type = block_selected;
-			world.MeshAdjacentBlocks(p.x, p.y, p.z);
+			world.get_block_r(int(p.x), int(p.y), int(p.z)).block_type = block_selected;
+			world.mesh_adjacent_blocks(p.x, p.y, p.z);
 		}
 		place_time = 0;
 	}
@@ -53,8 +53,8 @@ inline void Player::cast_ray(ChunkManager& world, float FrameTime)
 		p += Direction * 0.02;
 		if (world.does_block_exist(p.x, p.y, p.z))
 		{
-			world.GetBlock_r(p.x, p.y, p.z).block_type = 0;
-			world.MeshAdjacentBlocks(p.x, p.y, p.z);
+			world.get_block_r(p.x, p.y, p.z).block_type = 0;
+			world.mesh_adjacent_blocks(p.x, p.y, p.z);
 		}
 		place_time = 0;
 	}
@@ -68,7 +68,7 @@ inline void Player::world_collision(ChunkManager& world)
 		for (int z = position.z - 1; z < position.z + 1; z++)
 			for (int x = position.x - 1; x < position.x + 1; x++)
 			{
-				Block block = world.GetBlock(x, y, z);
+				Block block = world.get_block(x, y, z);
 				if (block.block_type == 0) continue;
 				AABB block_AABB(vec3(x, y, z), 1);
 				if (player_AABB.Collision_test(block_AABB))
