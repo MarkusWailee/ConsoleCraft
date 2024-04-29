@@ -62,7 +62,7 @@ inline void Player::cast_ray(ChunkManager& world, float FrameTime)
 
 inline void Player::world_collision(ChunkManager& world)
 {
-	AABB player_AABB(position - vec3(0, 1, 0), 1.0f, 1.8f);
+	AABB player_AABB(position - vec3(0, 1, 0), 0.8f, 1.8f);
 
 	for (int y = position.y - 1; y < position.y + 1; y++)
 		for (int z = position.z - 1; z < position.z + 1; z++)

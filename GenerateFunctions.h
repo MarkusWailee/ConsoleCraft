@@ -11,8 +11,11 @@ inline unsigned char sinwave_world(int x, int y, int z)
 {
 	//float height_map = 8 + 4* (sinf(float(x)/10) + sinf(float(z) / 10));
 	float height_map = get_height_map(x, z);
-	if (y < height_map)
+	if (y < height_map && y > height_map - 2)
+		return 1;
+	else if (y < height_map - 2)
 		return 2;
+	
 	return 0;
 }
 
