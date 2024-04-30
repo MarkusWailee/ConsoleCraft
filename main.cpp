@@ -10,13 +10,13 @@ int main()
 	std::cout << "\033[1;37m";//white
 	//Terminal3D::init(200, 160, float(4) / 2.1, 'Q');
 
-	Game game(10);
-	game.generate_chunks();
-	//std::thread([&]
-	//	{
-	//		while(true)
-	//			game.generate_chunks();
-	//	}).detach();
+	Game game(12);
+	//game.generate_chunks();
+	std::thread([&]
+		{
+			while(true)
+				game.generate_chunks();
+		}).detach();
 	
 
 	std::thread([&]
