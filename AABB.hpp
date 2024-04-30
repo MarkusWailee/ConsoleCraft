@@ -49,7 +49,7 @@ inline vec3 AABB::Collide(const AABB& box2, int& face_hit) //returns position b1
 			face_hit = i;
 		}
 
-	const float epsilon = 0.001;
+	const float epsilon = 0.002;
 
 	switch (index_found)
 	{

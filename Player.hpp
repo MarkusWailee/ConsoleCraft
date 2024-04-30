@@ -75,9 +75,9 @@ inline void Player::world_collision(ChunkManager& world)
 	int p_x = foat_to_int(position.x);
 	int p_y = foat_to_int(position.y);
 	int p_z = foat_to_int(position.z);
-	for (int y = p_y - 1; y < p_y + 1; y++)
-		for (int z = p_z - 1; z < p_z + 1; z++)
-			for (int x = p_x - 1; x < p_x + 1; x++)
+	for (int y = p_y - 1; y <= p_y + 1; y++)
+		for (int z = p_z - 1; z <= p_z + 1; z++)
+			for (int x = p_x - 1; x <= p_x + 1; x++)
 			{
 				Block block = world.get_block(x, y, z);
 				if (block.block_type == 0) continue;

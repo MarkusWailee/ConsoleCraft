@@ -2,7 +2,7 @@
 #include "thread"
 #include "ChunkManager.hpp"
 #include "Player.hpp"
-
+#include <queue>
 struct vec3i 
 {
 	int x = 0, y = 0, z = 0;
@@ -32,6 +32,7 @@ public:
 			get_chunk_position(player.position.y),
 			get_chunk_position(player.position.z));
 		int gen_offset = render_distance / 2;
+		std::vector<vec3i> chunks_added;
 
 		if (generation_position != player_chunk_position)
 		{
@@ -39,11 +40,17 @@ public:
 			for (int chunk_y = generation_position.y - gen_offset; chunk_y < generation_position.y + gen_offset; chunk_y++)
 				for (int chunk_z = generation_position.z - gen_offset; chunk_z < generation_position.z + gen_offset; chunk_z++)
 					for (int chunk_x = generation_position.x - gen_offset; chunk_x < generation_position.x + gen_offset; chunk_x++)
-						chunk_manager.add_block(chunk_x, chunk_y, chunk_z);
-			for (int chunk_y = generation_position.y - gen_offset; chunk_y < generation_position.y + gen_offset; chunk_y++)
-				for (int chunk_z = generation_position.z - gen_offset; chunk_z < generation_position.z + gen_offset; chunk_z++)
-					for (int chunk_x = generation_position.x - gen_offset; chunk_x < generation_position.x + gen_offset; chunk_x++)
-						chunk_manager.mesh_chunk(chunk_x, chunk_y, chunk_z);
+					{
+						if (chunk_manager.add_block(chunk_x, chunk_y, chunk_z))
+							chunks_added.push_back(vec3i(chunk_x, chunk_y, chunk_z));
+
+					}
+			for (int i = 0; i < chunks_added.size(); i++)
+			{
+				vec3i pos = chunks_added[i];
+				chunk_manager.mesh_chunk(pos.x, pos.y, pos.z);
+			}
+
 		}
 	}
 
