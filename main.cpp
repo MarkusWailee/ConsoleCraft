@@ -14,16 +14,16 @@ int main()
 	Game game(10);
 	//game.generate_chunks();
 	std::thread([&]
-		{
-			while(true)
-				game.generate_chunks();
-		}).detach();
+	{
+		while(true)
+			game.generate_chunks();
+	}).detach();
 	
 
 	std::thread([&]
-		{
-			game.run_physics();
-		}).detach();
+	{
+		game.run_physics();
+	}).detach();
 
 
 	game.render_game();

@@ -72,8 +72,8 @@ public:
 		{
 			game_time.HandleTime();
 			global_brightness = (sun_position.y + 50) / 100 + 0.1;
-			sun_position = mat::GetRotY(0.5) * mat::GetRotX(world_time) * vec3(10, 0, -50);
-			//sun_position = mat::GetRotY(0.5) * mat::GetRotX(game_time.GetTime() * 0.2) * vec3(10, 0, -50);
+			//sun_position = mat::GetRotY(0.5) * mat::GetRotX(world_time) * vec3(10, 0, -50);
+			sun_position = mat::GetRotY(0.5) * mat::GetRotX(game_time.GetTime() * 0.01) * vec3(10, 0, -50);
 			Terminal3D::change_background(get_asci_gradient(global_brightness * 0.8));
 			player.controls(game_time.GetFrameTime());
 			player.cast_ray(chunk_manager, game_time.GetFrameTime());

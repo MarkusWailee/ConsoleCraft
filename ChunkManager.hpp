@@ -250,7 +250,10 @@ inline void ChunkManager::render(Camera3D camera, float Brightness, vec3 sun_pos
 	for (int i = 0; i < map_size; i++)
 	{
 		Chunk& chunk = chunks[i];
-		if (chunk.data == NULL) continue;
+		vec3 chunk_pos = vec3(chunk.chunk_x * CHUNK_LENGTH, chunk.chunk_y * CHUNK_LENGTH, chunk.chunk_z * CHUNK_LENGTH);
+		chunk_pos = camera.RotXAxis() * camera.RotYAxis() * (chunk_pos - camera.position);
+
+		if (chunk.data == NULL || chunk_pos.z < -CHUNK_LENGTH * 1.73) continue;
 
 		int block_x = chunk.chunk_x * CHUNK_LENGTH;
 		int block_y = chunk.chunk_y * CHUNK_LENGTH;

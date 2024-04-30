@@ -176,21 +176,31 @@ inline void Player::controls(float FrameTime)
 	if (GetAsyncKeyState(38) & 0x8000)
 		view.y += sensitivity * FrameTime;
 	
-	if (velocity.x * velocity.x + velocity.z * velocity.z < speed * speed)
+
+
+	if (!is_flying)
 	{
-		velocity.x += acceleration * movement_direction.x * FrameTime;
-		velocity.z += acceleration * movement_direction.y * FrameTime;
+		if (velocity.x * velocity.x + velocity.z * velocity.z < speed * speed)
+		{
+			velocity.x += acceleration * movement_direction.x * FrameTime;
+			velocity.z += acceleration * movement_direction.y * FrameTime;
+		}
+		velocity.y -= 15 * FrameTime;
+		velocity.x -= friction * velocity.x * FrameTime;
+		velocity.z -= friction * velocity.z * FrameTime;
+		position += velocity * FrameTime;
+	}
+	else
+	{
+		if (velocity.x * velocity.x + velocity.z * velocity.z < speed * speed)
+		{
+			velocity.x += acceleration * 0.2 * movement_direction.x * FrameTime;
+			velocity.z += acceleration * 0.2 * movement_direction.y * FrameTime;
+		}
+		velocity.y -= friction * velocity.y * FrameTime;
+		velocity.x -= friction * 0.2 * velocity.x * FrameTime;
+		velocity.z -= friction * 0.2 * velocity.z * FrameTime;
+		position += 2 * velocity * FrameTime;
 	}
 
-
-	if(!is_flying)
-		velocity.y -= 15 * FrameTime;
-	else
-		velocity.y -= friction * velocity.y * FrameTime;
-
-	velocity.x -= friction * velocity.x * FrameTime;
-	velocity.z -= friction * velocity.z * FrameTime;
-	if(is_flying) position += speed * velocity * FrameTime;
-	else
-		position += velocity * FrameTime;
 }
