@@ -8,9 +8,10 @@ int main()
 	//window initialization
 	Terminal3D::init(460,320,float(4)/2.1, 'Q');
 	std::cout << "\033[1;37m";//white
+	//Terminal3D::init(230, 230, float(4) / 2.5, 'Q');
 	//Terminal3D::init(200, 160, float(4) / 2.1, 'Q');
 
-	Game game(15);
+	Game game(10);
 	//game.generate_chunks();
 	std::thread([&]
 		{

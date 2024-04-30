@@ -60,10 +60,13 @@ inline void Player::cast_ray(ChunkManager& world, float FrameTime)
 	if (GetAsyncKeyState(8) & 0x8000 && place_time > 0.2)
 	{
 		p += Direction * 0.02;
-		if (world.does_block_exist(p.x, p.y, p.z))
+		int p_x = float_to_int(p.x);
+		int p_y = float_to_int(p.y);
+		int p_z = float_to_int(p.z);
+		if (world.does_block_exist(p_x, p_y, p_z))
 		{
-			world.get_block_r(p.x, p.y, p.z).block_type = 0;
-			world.mesh_adjacent_blocks(p.x, p.y, p.z);
+			world.get_block_r(p_x, p_y, p_z).block_type = 0;
+			world.mesh_adjacent_blocks(p_x, p_y, p_z);
 		}
 		place_time = 0;
 	}
@@ -155,6 +158,10 @@ inline void Player::controls(float FrameTime)
 		movement_direction = movement_direction.Normalize();
 	if (GetAsyncKeyState('C') & 0x8000)
 		velocity.y = -5;
+	if (GetAsyncKeyState('F') & 0x8000)
+		is_flying = 1;
+	if (GetAsyncKeyState('X') & 0x8000)
+		is_flying = 0;
 	if (GetAsyncKeyState(' ') & 0x8000 && (on_ground || is_flying))
 	{
 		velocity.y = 6;

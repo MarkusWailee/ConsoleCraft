@@ -55,9 +55,9 @@ public:
 			for (int chunk_z = generation_position.z - gen_offset; chunk_z < generation_position.z + gen_offset; chunk_z++)
 				for (int chunk_x = generation_position.x - gen_offset; chunk_x < generation_position.x + gen_offset; chunk_x++)
 				{
-					int block_x = chunk_x * CHUNK_LENGTH + myrand(chunk_x + chunk_z * render_distance) % CHUNK_LENGTH;
-					int block_z = chunk_z * CHUNK_LENGTH + myrand(chunk_z + chunk_x * render_distance + 5) % CHUNK_LENGTH;
-					if(!(myrand(myrand(block_x) + myrand(block_z)) % 3))
+					int block_x = chunk_x * CHUNK_LENGTH + myrand(myrand(chunk_x) + chunk_z * render_distance) % CHUNK_LENGTH;
+					int block_z = chunk_z * CHUNK_LENGTH + myrand(myrand(chunk_z) + chunk_x * render_distance) % CHUNK_LENGTH;
+					if(!(myrand(myrand(block_x) + myrand(block_z)) % 2))
 					chunk_manager.place_tree(block_x, get_height_map(block_x, block_z), block_z);
 				}
 
