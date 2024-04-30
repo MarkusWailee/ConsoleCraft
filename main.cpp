@@ -10,7 +10,7 @@ int main()
 	std::cout << "\033[1;37m";//white
 	//Terminal3D::init(200, 160, float(4) / 2.1, 'Q');
 
-	Game game(10);
+	Game game(15);
 	//game.generate_chunks();
 	std::thread([&]
 		{
@@ -25,7 +25,6 @@ int main()
 		}).detach();
 
 
-		std::cin.get();
 	game.render_game();
 
 	Terminal3D::terminate();

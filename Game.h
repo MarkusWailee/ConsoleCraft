@@ -5,8 +5,10 @@
 #include <queue>
 
 int myrand(int seed) {
-	seed = seed * 1103515245 + 12345;
-	return((unsigned)(seed / 65536) % 32768);
+	const int a = 1664525;
+	const int c = 1013904223;
+	seed = (a * seed + c) & 0x7fffffff; 
+	return seed;
 }
 
 struct vec3i 
@@ -33,35 +35,32 @@ public:
 
 	void generate_chunks()
 	{
+		//THIS WAS TEMPORARY DONT JUDGE
 		vec3i player_chunk_position = vec3i(
 			get_chunk_position(float_to_int(player.position.x)),
 			get_chunk_position(float_to_int(player.position.y)),
 			get_chunk_position(float_to_int(player.position.z)));
 		int gen_offset = render_distance / 2;
-		std::vector<vec3i> chunks_added;
-		int count = 0;
 		if (generation_position != player_chunk_position)
 		{
 			generation_position = player_chunk_position;
 			for (int chunk_y = generation_position.y - gen_offset; chunk_y < generation_position.y + gen_offset; chunk_y++)
 				for (int chunk_z = generation_position.z - gen_offset; chunk_z < generation_position.z + gen_offset; chunk_z++)
 					for (int chunk_x = generation_position.x - gen_offset; chunk_x < generation_position.x + gen_offset; chunk_x++)
-					{
-						if (chunk_manager.add_block(chunk_x, chunk_y, chunk_z))
-						{
-							chunks_added.push_back(vec3i(chunk_x, chunk_y, chunk_z));
-						}
+						chunk_manager.add_block(chunk_x, chunk_y, chunk_z);
+			for (int chunk_y = generation_position.y - gen_offset; chunk_y < generation_position.y + gen_offset; chunk_y++)
+				for (int chunk_z = generation_position.z - gen_offset; chunk_z < generation_position.z + gen_offset; chunk_z++)
+					for (int chunk_x = generation_position.x - gen_offset; chunk_x < generation_position.x + gen_offset; chunk_x++)
+						chunk_manager.mesh_chunk(chunk_x, chunk_y, chunk_z);
+			for (int chunk_z = generation_position.z - gen_offset; chunk_z < generation_position.z + gen_offset; chunk_z++)
+				for (int chunk_x = generation_position.x - gen_offset; chunk_x < generation_position.x + gen_offset; chunk_x++)
+				{
+					int block_x = chunk_x * CHUNK_LENGTH + myrand(chunk_x + chunk_z * render_distance) % CHUNK_LENGTH;
+					int block_z = chunk_z * CHUNK_LENGTH + myrand(chunk_z + chunk_x * render_distance + 5) % CHUNK_LENGTH;
+					if(!(myrand(myrand(block_x) + myrand(block_z)) % 3))
+					chunk_manager.place_tree(block_x, get_height_map(block_x, block_z), block_z);
+				}
 
-					}
-			for (int i = 0; i < chunks_added.size(); i++)
-			{
-				vec3i pos = chunks_added[i];
-				chunk_manager.mesh_chunk(pos.x, pos.y, pos.z);
-				int block_x = pos.x * CHUNK_LENGTH;
-				int block_z = pos.y * CHUNK_LENGTH; 
-				chunk_manager.place_tree(block_x, get_height_map(block_x, block_z), block_z);
-	
-			}
 		}
 	}
 
