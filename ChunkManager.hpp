@@ -2,17 +2,20 @@
 #include "AsciGraphics/AsciGraphics.h"
 #include "GenerateFunctions.h"
 #include "CubeMesh.h"
-/* chunk_x  (World space Chunk position) World Chunk Position(WSCP)
-*  block_x  (World space block position) World Block Position(WSBP)
-*  x		(Chunk space block position) Chunk Block Position(CSBP)
+/* chunk_x  (World space Chunk position)
+*  block_x  (World space block position)
+*  x		(Chunk space block position)
 */ 
 
 
 
-const int CHUNK_LENGTH = 8;
+const int CHUNK_LENGTH = 16;
 const int CHUNK_SIZE = CHUNK_LENGTH * CHUNK_LENGTH * CHUNK_LENGTH;
 
-
+inline int get_chunk_position(int block_p)
+{
+	return (block_p / CHUNK_LENGTH) - (block_p % CHUNK_LENGTH != 0 && block_p < 0);
+}
 
 struct Block
 {
@@ -60,53 +63,29 @@ class ChunkManager
 public:
 	ChunkManager(int distance) : map_length(distance), map_size(distance * distance * distance) 
 	{
-		//Grass
-		Terminal3D::add_texture_ppm(1, "src/Textures/grass_block_side.ppm");
-		Terminal3D::add_texture_ppm(2, "src/Textures/grass_block_top.ppm");
-		Terminal3D::add_texture_ppm(3, "src/Textures/dirt.ppm");
-		//Cobble
-		Terminal3D::add_texture_ppm(4, "src/Textures/cobblestone.ppm");
-		//oad_plank
-		Terminal3D::add_texture_ppm(5, "src/Textures/oak_planks.ppm");
-		//oak_log
-		Terminal3D::add_texture_ppm(6, "src/Textures/oak_log.ppm");
-		Terminal3D::add_texture_ppm(7, "src/Textures/oak_log_top.ppm");
-		//crafting table
-		Terminal3D::add_texture_ppm(8, "src/Textures/crafting_table_side.ppm");
-		Terminal3D::add_texture_ppm(9, "src/Textures/crafting_table_front.ppm");
-		Terminal3D::add_texture_ppm(10, "src/Textures/crafting_table_top.ppm");
-
-		//furnace
-		Terminal3D::add_texture_ppm(11, "src/Textures/furnace_front.ppm");
-		Terminal3D::add_texture_ppm(12, "src/Textures/furnace_side.ppm");
-		Terminal3D::add_texture_ppm(13, "src/Textures/furnace_top.ppm");
-
-		//leaves
-		Terminal3D::add_texture_ppm(14, "src/Textures/oak_leaves.ppm");
+		Cube::init_textures();
 		Cube::init_tree();
-
 		chunks = new Chunk[map_size];
 	}
 	~ChunkManager() { delete[] chunks; }
 	unsigned int hash_function(int chunk_x, int chunk_y, int chunk_z);
 	unsigned char get_block(int x, int y, int z);
-	//r for reference
 	Block& get_block_r(int x, int y, int z);
 	bool does_block_exist(int block_x, int block_y, int block_z);
-	void add_block(int chunk_x, int chunk_y, int chunk_z);
+	bool add_block(int chunk_x, int chunk_y, int chunk_z);
 	void mesh_chunk(int chunk_x, int chunk_y, int chunk_z);
 	void mesh_block(int block_x, int block_y, int block_z);
 	void mesh_adjacent_blocks(int block_x, int block_y, int block_z);
 	void place_tree(int x, int y, int z);
-	//I use this for raycasting 
 	void render(Camera3D camera, float Brightness, vec3 sun_position);
 };
 
 inline bool ChunkManager::does_block_exist(int block_x, int block_y, int block_z)
 {
-	int chunk_x = (block_x / CHUNK_LENGTH) - (block_x % CHUNK_LENGTH != 0 && block_x < 0);
-	int chunk_y = (block_y / CHUNK_LENGTH) - (block_y % CHUNK_LENGTH != 0 && block_y < 0);
-	int chunk_z = (block_z / CHUNK_LENGTH) - (block_z % CHUNK_LENGTH != 0 && block_z < 0);
+	//world block space to world chunk space
+	int chunk_x = get_chunk_position(block_x);
+	int chunk_y = get_chunk_position(block_y);
+	int chunk_z = get_chunk_position(block_z);
 	Chunk& chunk = chunks[hash_function(chunk_x, chunk_y, chunk_z)];
 	if (!(chunk.chunk_x == chunk_x && chunk.chunk_y == chunk_y && chunk.chunk_z == chunk_z))
 	{
@@ -123,7 +102,7 @@ inline unsigned int ChunkManager::hash_function(int chunk_x, int chunk_y, int ch
 }
 inline unsigned char ChunkManager::get_block(int block_x, int block_y, int block_z)
 {
-	//world space block position(WSBP) to world space chunk position(WSCP).			 This code was to support negative block positions
+	//world block space to world chunk space
 	int chunk_x = (block_x / CHUNK_LENGTH) - (block_x % CHUNK_LENGTH != 0 && block_x < 0);
 	int chunk_y = (block_y / CHUNK_LENGTH) - (block_y % CHUNK_LENGTH != 0 && block_y < 0);
 	int chunk_z = (block_z / CHUNK_LENGTH) - (block_z % CHUNK_LENGTH != 0 && block_z < 0);
@@ -145,7 +124,7 @@ inline unsigned char ChunkManager::get_block(int block_x, int block_y, int block
 }
 inline Block& ChunkManager::get_block_r(int block_x, int block_y, int block_z)
 {
-	//world space block position(WSBP) to world space chunk position(WSCP).			 This code was to support negative block positions
+	//world block position to world chunk position
 	int chunk_x = (block_x / CHUNK_LENGTH) - (block_x % CHUNK_LENGTH != 0 && block_x < 0);
 	int chunk_y = (block_y / CHUNK_LENGTH) - (block_y % CHUNK_LENGTH != 0 && block_y < 0);
 	int chunk_z = (block_z / CHUNK_LENGTH) - (block_z % CHUNK_LENGTH != 0 && block_z < 0);
@@ -156,7 +135,7 @@ inline Block& ChunkManager::get_block_r(int block_x, int block_y, int block_z)
 		std::cout << "Incorrect Indexing in GetBlock_r function\n";
 		throw;
 	}
-	//world space block position(WSBP) to Chunk space block position(CSBP)
+	//world block position to Chunk space block position
 	int x = block_x % CHUNK_LENGTH;
 	int y = block_y % CHUNK_LENGTH;
 	int z = block_z % CHUNK_LENGTH;
@@ -165,14 +144,12 @@ inline Block& ChunkManager::get_block_r(int block_x, int block_y, int block_z)
 	z = z < 0 ? CHUNK_LENGTH + z : z;
 	return chunk.get_block_r(x, y, z);
 }
-inline void ChunkManager::add_block(int chunk_x, int chunk_y, int chunk_z)
+inline bool ChunkManager::add_block(int chunk_x, int chunk_y, int chunk_z)
 {
-	//std::cout<<"Created Chunk\n";
 	Chunk& chunk = chunks[hash_function(chunk_x, chunk_y, chunk_z)];
 	if (chunk.chunk_x == chunk_x && chunk.chunk_y == chunk_y && chunk.chunk_z == chunk_z)
 	{
-		std::cout << "Chunk already added\n";
-		return;
+		return 0;
 	}
 	if (chunk.data == NULL) 
 		chunk.data = new Block[CHUNK_SIZE];
@@ -189,6 +166,7 @@ inline void ChunkManager::add_block(int chunk_x, int chunk_y, int chunk_z)
 		for (int z = 0; z < CHUNK_LENGTH; z++)
 			for (int x = 0; x < CHUNK_LENGTH; x++)
 				chunk.get_block_r(x, y, z).block_type = sinwave_world(block_x + x, block_y + y, block_z + z);
+	return 1;
 }
 inline void ChunkManager::mesh_chunk(int chunk_x, int chunk_y, int chunk_z)
 {

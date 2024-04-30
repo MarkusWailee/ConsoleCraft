@@ -11,7 +11,7 @@ struct Player : Camera3D
 	void world_collision(ChunkManager& world);
 	void controls(float FrameTime);
 private:
-	bool is_flying = 0;
+	bool is_flying = 1;
 	bool on_ground = 0;
 	vec3 velocity;
 	unsigned char block_selected = 1;
@@ -97,7 +97,7 @@ inline void Player::controls(float FrameTime)
 	vec2 movement_direction = vec2(0, 0);
 	float movement_y = 0;
 
-	float speed = 25;
+	float speed = 5;
 	float acceleration = 50;
 	float sensitivity = 2;
 	float friction = 10;
@@ -172,6 +172,7 @@ inline void Player::controls(float FrameTime)
 
 	velocity.x -= friction * velocity.x * FrameTime;
 	velocity.z -= friction * velocity.z * FrameTime;
-
-	position += velocity * FrameTime;
+	if(is_flying) position += speed * velocity * FrameTime;
+	else
+		position += velocity * FrameTime;
 }

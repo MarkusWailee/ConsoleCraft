@@ -29,11 +29,34 @@ namespace Cube
 			tree_assemble.push_back(4);
 		}
 	}
+	void init_textures()
+	{
+		//Grass
+		Terminal3D::add_texture_ppm(1, "src/Textures/grass_block_side.ppm");
+		Terminal3D::add_texture_ppm(2, "src/Textures/grass_block_top.ppm");
+		Terminal3D::add_texture_ppm(3, "src/Textures/dirt.ppm");
+		//Cobble
+		Terminal3D::add_texture_ppm(4, "src/Textures/cobblestone.ppm");
+		//oad_plank
+		Terminal3D::add_texture_ppm(5, "src/Textures/oak_planks.ppm");
+		//oak_log
+		Terminal3D::add_texture_ppm(6, "src/Textures/oak_log.ppm");
+		Terminal3D::add_texture_ppm(7, "src/Textures/oak_log_top.ppm");
+		//crafting table
+		Terminal3D::add_texture_ppm(8, "src/Textures/crafting_table_side.ppm");
+		Terminal3D::add_texture_ppm(9, "src/Textures/crafting_table_front.ppm");
+		Terminal3D::add_texture_ppm(10, "src/Textures/crafting_table_top.ppm");
 
-		
+		//furnace
+		Terminal3D::add_texture_ppm(11, "src/Textures/furnace_front.ppm");
+		Terminal3D::add_texture_ppm(12, "src/Textures/furnace_side.ppm");
+		Terminal3D::add_texture_ppm(13, "src/Textures/furnace_top.ppm");
 
+		//leaves
+		Terminal3D::add_texture_ppm(14, "src/Textures/oak_leaves.ppm");
+	}
 
-
+	
 	const std::vector<unsigned int> block_type =
 	{
 		//air 
