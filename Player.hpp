@@ -4,7 +4,7 @@
 #include <Windows.h>
 #include "AABB.hpp"
 
-int foat_to_int(float n)
+int float_to_int(float n)
 {
 	if (n < 0) return int(n - 1);
 	return n;
@@ -17,7 +17,7 @@ struct Player : Camera3D
 	void world_collision(ChunkManager& world);
 	void controls(float FrameTime);
 private:
-	bool is_flying = 0;
+	bool is_flying = 1;
 	bool on_ground = 0;
 	vec3 velocity;
 	unsigned char block_selected = 1;
@@ -30,7 +30,7 @@ inline void Player::cast_ray(ChunkManager& world, float FrameTime)
 	vec3 v = Direction;
 	for (int step = 0; step < 400; step++)
 	{
-		if (world.get_block(foat_to_int(p.x), foat_to_int(p.y), foat_to_int(p.z))) break;
+		if (world.get_block(float_to_int(p.x), float_to_int(p.y), float_to_int(p.z))) break;
 		float dx = v.x >= 0 ? (ceilf(p.x) - p.x) / v.x : (floorf(p.x) - p.x) / v.x;
 		float dy = v.y >= 0 ? (ceilf(p.y) - p.y) / v.y : (floorf(p.y) - p.y) / v.y;
 		float dz = v.z >= 0 ? (ceilf(p.z) - p.z) / v.z : (floorf(p.z) - p.z) / v.z;
@@ -45,9 +45,9 @@ inline void Player::cast_ray(ChunkManager& world, float FrameTime)
 	if (GetAsyncKeyState(13) & 0x8000 && place_time > 0.2)
 	{
 		p -= Direction * 0.02;
-		int p_x = foat_to_int(p.x);
-		int p_y = foat_to_int(p.y);
-		int p_z = foat_to_int(p.z);
+		int p_x = float_to_int(p.x);
+		int p_y = float_to_int(p.y);
+		int p_z = float_to_int(p.z);
 		if (world.does_block_exist(p_x, p_y, p_z))
 		{
 			world.get_block_r(int(p_x), int(p_y), int(p_z)).block_type = block_selected;
@@ -72,9 +72,9 @@ inline void Player::cast_ray(ChunkManager& world, float FrameTime)
 inline void Player::world_collision(ChunkManager& world)
 {
 	AABB player_AABB(position - vec3(0, 1, 0), 0.8f, 1.8f);
-	int p_x = foat_to_int(position.x);
-	int p_y = foat_to_int(position.y);
-	int p_z = foat_to_int(position.z);
+	int p_x = float_to_int(position.x);
+	int p_y = float_to_int(position.y);
+	int p_z = float_to_int(position.z);
 	for (int y = p_y - 1; y <= p_y + 1; y++)
 		for (int z = p_z - 1; z <= p_z + 1; z++)
 			for (int x = p_x - 1; x <= p_x + 1; x++)

@@ -103,9 +103,9 @@ inline unsigned int ChunkManager::hash_function(int chunk_x, int chunk_y, int ch
 inline unsigned char ChunkManager::get_block(int block_x, int block_y, int block_z)
 {
 	//world block space to world chunk space
-	int chunk_x = (block_x / CHUNK_LENGTH) - (block_x % CHUNK_LENGTH != 0 && block_x < 0);
-	int chunk_y = (block_y / CHUNK_LENGTH) - (block_y % CHUNK_LENGTH != 0 && block_y < 0);
-	int chunk_z = (block_z / CHUNK_LENGTH) - (block_z % CHUNK_LENGTH != 0 && block_z < 0);
+	int chunk_x = get_chunk_position(block_x);
+	int chunk_y = get_chunk_position(block_y);
+	int chunk_z = get_chunk_position(block_z);
 
 	Chunk& chunk = chunks[hash_function(chunk_x, chunk_y, chunk_z)];
 	if (!(chunk.chunk_x == chunk_x && chunk.chunk_y == chunk_y && chunk.chunk_z == chunk_z))
