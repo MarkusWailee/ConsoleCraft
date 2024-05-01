@@ -93,6 +93,21 @@ public:
 				Draw::circle(vec3(0, 0, 0), 1, ' ');
 				Draw3D::sun(sun_position, 7, 1, player);
 
+				int i = 0;
+				for (int z = - render_distance; z < + render_distance; z++)
+					for (int x = - render_distance; x < + render_distance; x++)
+					{
+						i++;
+						
+						int block_x = generation_position.x - x;
+						int block_z = generation_position.z - z;
+						float blk_x = block_x * CHUNK_LENGTH + (myrand(myrand(block_x) + myrand(block_z)) % CHUNK_LENGTH);
+						float blk_z = block_z * CHUNK_LENGTH + (myrand(myrand(block_z) + myrand(block_x)) % CHUNK_LENGTH);
+						//if (blk_x - generation_position.x < -render_distance/2) blk_x += generation_position.x + render_distance/2;
+						if(!(myrand(myrand(block_x) + myrand(block_z * 100)) % 6))
+							Draw3D::cube(vec3(blk_x , 60 + myrand(myrand(block_x) + myrand(block_z + block_z) ) % 30, blk_z), 5, 1, player);
+					}
+
 				Terminal3D::render();
 				Terminal3D::clear_buffer();
 			}

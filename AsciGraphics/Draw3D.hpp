@@ -55,14 +55,14 @@ inline void Draw3D::cube(const vec3 position, float size, float Brightness, Came
 {
 	vec3 v[] =
 	{
-		vec3(-1,-1,-1),
-		vec3(1,-1,-1),
-		vec3(1,1,-1),
-		vec3(-1,1,-1),
-		vec3(-1,-1,1),
-		vec3(1,-1,1),
-		vec3(1,1,1),
-		vec3(-1,1,1),
+		vec3(-1,-0.5,-2),
+		vec3(1,-0.5,-2),
+		vec3(1,0.5,-2),
+		vec3(-1,0.5,-2),
+		vec3(-1,-0.5,2),
+		vec3(1,-0.5,2),
+		vec3(1,0.5,2),
+		vec3(-1,0.5,2),
 	};
 	for (int i = 0; i < 8; i++)
 	{
@@ -73,10 +73,10 @@ inline void Draw3D::cube(const vec3 position, float size, float Brightness, Came
 		v[i] = vec3(v[i].x / v[i].z, v[i].y / v[i].z, v[i].z);
 		if (v[i].z < 0)return;
 	}
-	quad(v[0], v[1], v[2], v[3], Brightness*1);
-	quad(v[1], v[2], v[6], v[5], Brightness*1);
-	quad(v[0], v[3], v[7], v[4], Brightness*1);
-	quad(v[4], v[5], v[6], v[7], Brightness*1);
+	quad(v[0], v[1], v[2], v[3], Brightness*0.8);
+	quad(v[1], v[2], v[6], v[5], Brightness*0.9);
+	quad(v[0], v[3], v[7], v[4], Brightness*0.8);
+	quad(v[4], v[5], v[6], v[7], Brightness*0.9);
 	quad(v[3], v[2], v[6], v[7], Brightness*1);
 	quad(v[0], v[1], v[5], v[4], Brightness*1);
 }

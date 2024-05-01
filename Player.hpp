@@ -188,7 +188,7 @@ inline void Player::controls(float FrameTime)
 		velocity.y -= 15 * FrameTime;
 		velocity.x -= friction * velocity.x * FrameTime;
 		velocity.z -= friction * velocity.z * FrameTime;
-		position += velocity * FrameTime;
+		position +=  velocity * FrameTime;
 	}
 	else
 	{
@@ -200,7 +200,7 @@ inline void Player::controls(float FrameTime)
 		velocity.y -= friction * velocity.y * FrameTime;
 		velocity.x -= friction * 0.2 * velocity.x * FrameTime;
 		velocity.z -= friction * 0.2 * velocity.z * FrameTime;
-		position += 2 * velocity * FrameTime;
+		position += speed * velocity * FrameTime;
 	}
 
 }
