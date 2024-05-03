@@ -74,7 +74,7 @@ inline void Terminal3D::init_i(int ScreenWidth, int ScreenHeight, char backgroun
 	std::fill_n(back_buffer, SCREEN_CHAR_COUNT, background_character);
 	for (int i = 0; i <= ScreenHeight; i++)
 		back_buffer[(ScreenWidth * 2) + i * (ScreenWidth * 2+1)] = '\n';
-	back_buffer[SCREEN_CHAR_COUNT - 2] = '\n';
+	//back_buffer[SCREEN_CHAR_COUNT - 2] = '\n';
 	back_buffer[SCREEN_CHAR_COUNT - 1] = NULL;
 	std::memcpy(front_buffer, back_buffer, SCREEN_CHAR_COUNT);
 	//z buffer setup

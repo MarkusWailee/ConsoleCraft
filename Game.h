@@ -30,7 +30,7 @@ class Game
 public:
 	Game(int render_distance) :render_distance(render_distance), chunk_manager(render_distance)
 	{
-		player.position = vec3(32, get_height_map(32, 32) + 1, 32);
+		player.position = vec3(32, get_height_map(32, 32) + 2, 32);
 	}
 
 	void generate_chunks()
@@ -70,10 +70,14 @@ public:
 		game_time.HandleTime();
 		while (is_game_running)
 		{
+			if (day_time > 209.5) day_time = 0;
+			day_time += game_time.GetFrameTime();
+			if (GetAsyncKeyState('G') & 0x8000)
+				day_time += 20 * game_time.GetFrameTime();
 			game_time.HandleTime();
 			global_brightness = (sun_position.y + 50) / 100 + 0.1;
 			//sun_position = mat::GetRotY(0.5) * mat::GetRotX(world_time) * vec3(10, 0, -50);
-			sun_position = mat::GetRotY(0.5) * mat::GetRotX(game_time.GetTime() * 0.01) * vec3(10, 0, -50);
+			sun_position = mat::GetRotY(0.5) * mat::GetRotX(day_time * 0.03) * vec3(10, 0, -50);
 			Terminal3D::change_background(get_asci_gradient(global_brightness * 0.8));
 			player.controls(game_time.GetFrameTime());
 			player.cast_ray(chunk_manager, game_time.GetFrameTime());
@@ -89,30 +93,29 @@ public:
 			{
 				Render_Time.HandleTime();
 				Render_Time.ShowFPS();
-				chunk_manager.render(player, clampf(global_brightness, 0.4, 0.60), sun_position);
 				Draw::circle(vec3(0, 0, 0), 1, ' ');
-				Draw3D::sun(sun_position, 7, 1, player);
+				Draw3D::sun(sun_position, 14, 1, player);
 
-				int i = 0;
+
+				//Render clouds
 				for (int z = - render_distance; z < + render_distance; z++)
 					for (int x = - render_distance; x < + render_distance; x++)
 					{
-						i++;
-						
 						int block_x = generation_position.x - x;
 						int block_z = generation_position.z - z;
 						float blk_x = block_x * CHUNK_LENGTH + (myrand(myrand(block_x) + myrand(block_z)) % CHUNK_LENGTH);
 						float blk_z = block_z * CHUNK_LENGTH + (myrand(myrand(block_z) + myrand(block_x)) % CHUNK_LENGTH);
-						//if (blk_x - generation_position.x < -render_distance/2) blk_x += generation_position.x + render_distance/2;
 						if(!(myrand(myrand(block_x) + myrand(block_z * 100)) % 6))
-							Draw3D::cube(vec3(blk_x , 60 + myrand(myrand(block_x) + myrand(block_z + block_z) ) % 30, blk_z), 5, 1, player);
+							Draw3D::cube(vec3(blk_x , 60 + myrand(myrand(block_x) + myrand(block_z + block_z) ) % 30, blk_z), 5, clampf(0.1 + global_brightness, 0, 0.99), player);
 					}
+				chunk_manager.render(player, clampf(global_brightness, 0.4, 0.60), sun_position);
 
 				Terminal3D::render();
 				Terminal3D::clear_buffer();
 			}
 	}
 private:
+	float day_time = 0;
 	bool is_game_running = 1;
 	float world_time = 1;
 	int render_distance = 0;

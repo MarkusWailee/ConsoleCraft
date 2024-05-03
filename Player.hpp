@@ -17,9 +17,10 @@ struct Player : Camera3D
 	void world_collision(ChunkManager& world);
 	void controls(float FrameTime);
 private:
-	bool is_flying = 1;
+	bool is_flying = 0;
 	bool on_ground = 0;
 	vec3 velocity;
+	vec2 view_velocity;
 	unsigned char block_selected = 1;
 };
 
@@ -111,10 +112,10 @@ inline void Player::controls(float FrameTime)
 	vec2 movement_direction = vec2(0, 0);
 	float movement_y = 0;
 
-	float speed = 5;
+	float speed =6;
 	float acceleration = 50;
 	float sensitivity = 2;
-	float friction = 10;
+	float friction = 8;
 	mat3 RotY =
 	{
 		cosf(-view.x), 0, sinf(-view.x),
@@ -164,21 +165,35 @@ inline void Player::controls(float FrameTime)
 		is_flying = 0;
 	if (GetAsyncKeyState(' ') & 0x8000 && (on_ground || is_flying))
 	{
-		velocity.y = 6;
-		on_ground = 0;
+			velocity.y = 6;
+			on_ground = 0;
 	}
 	if (GetAsyncKeyState(37) & 0x8000)
-		view.x += sensitivity * FrameTime;
+		view_velocity.x += sensitivity * FrameTime;
 	if (GetAsyncKeyState(39) & 0x8000)
-		view.x -= sensitivity * FrameTime;
+		view_velocity.x -= sensitivity * FrameTime;
 	if (GetAsyncKeyState(40) & 0x8000)
-		view.y -= sensitivity * FrameTime;
+		view_velocity.y -= sensitivity * FrameTime;
 	if (GetAsyncKeyState(38) & 0x8000)
-		view.y += sensitivity * FrameTime;
+		view_velocity.y += sensitivity * FrameTime;
 	
 
+	if (is_flying)
+	{
+		if (velocity.x * velocity.x + velocity.z * velocity.z < speed * speed)
+		{
+			velocity.x += acceleration * 0.2 * movement_direction.x * FrameTime;
+			velocity.z += acceleration * 0.2 * movement_direction.y * FrameTime;
+		}
+		velocity.y -= friction *velocity.y * FrameTime;
+		velocity.x -= friction * 0.2 * velocity.x * FrameTime;
+		velocity.z -= friction * 0.2 * velocity.z * FrameTime;
+		position += velocity * FrameTime;
 
-	if (!is_flying)
+		view += view_velocity * FrameTime;
+		view_velocity -= view_velocity * FrameTime;
+	}
+	else
 	{
 		if (velocity.x * velocity.x + velocity.z * velocity.z < speed * speed)
 		{
@@ -188,19 +203,12 @@ inline void Player::controls(float FrameTime)
 		velocity.y -= 15 * FrameTime;
 		velocity.x -= friction * velocity.x * FrameTime;
 		velocity.z -= friction * velocity.z * FrameTime;
-		position +=  velocity * FrameTime;
+		position += velocity * FrameTime;
+
+		view += 25 * view_velocity * FrameTime;
+		view_velocity -= 25 * view_velocity * FrameTime;
 	}
-	else
-	{
-		if (velocity.x * velocity.x + velocity.z * velocity.z < speed * speed)
-		{
-			velocity.x += acceleration * 0.2 * movement_direction.x * FrameTime;
-			velocity.z += acceleration * 0.2 * movement_direction.y * FrameTime;
-		}
-		velocity.y -= friction * velocity.y * FrameTime;
-		velocity.x -= friction * 0.2 * velocity.x * FrameTime;
-		velocity.z -= friction * 0.2 * velocity.z * FrameTime;
-		position += speed * velocity * FrameTime;
-	}
+
+
 
 }
