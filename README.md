@@ -1,6 +1,6 @@
 # ASCI Minecraft clone
 please rename file to "src" if you clone it.
-This is a Minecraft clone running entirely in the command prompt with no libraries for windows 11. Windows 10 currently does not display properly without terminal modifications.
+This is a Minecraft clone running entirely in the command prompt with no libraries for windows.
 ![](https://github.com/MarkusWailee/ConsoleCraft/assets/151405696/9a14bf86-df5b-4959-aa57-348acdfa4e63)
 ![](https://github.com/MarkusWailee/ConsoleCraft/assets/151405696/5b3ef366-6209-4905-886a-2b76d0ed3ee5)
 ## Features
@@ -20,3 +20,6 @@ This is a Minecraft clone running entirely in the command prompt with no librari
 - F to enable flying
 - X to disable flying
 - Hold G for cycling day/night cycle
+## Note
+- Change file name to "src" when cloning.
+- Make sure to update to the latest version of the windows terminal.
