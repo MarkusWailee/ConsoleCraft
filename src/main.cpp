@@ -7,9 +7,9 @@
 int main()
 {
 	//window initialization
-	Terminal3D::init(454,320,float(4)/2.1, 'Q');
+	Terminal3D::init(454,325,float(4)/2.1, 'Q');
 	std::cout << "\033[1;37m";//white
-	//Terminal3D::init(230, 160, float(4) / 2.5, 'Q');
+	//Terminal3D::init(230, 230, float(4) / 2.5, 'Q');
 	//Terminal3D::init(200, 160, float(4) / 2.1, 'Q');
 
 	Game game(12);

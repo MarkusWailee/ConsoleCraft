@@ -12,9 +12,9 @@ inline float clampf(float value, float min, float max)
 }
 inline char get_asci_gradient(float Brightness)
 {
-	const char* ASCI_GRADIENT = " .:'-~=<\*({[%08O#@Q&";
+	const char ASCI_GRADIENT[] = " .:'-~=<\\*({[%08O#@Q&";
 	Brightness = clampf(Brightness, 0, 0.99);
-	return ASCI_GRADIENT[int(strlen(ASCI_GRADIENT) * Brightness)];
+	return ASCI_GRADIENT[int((sizeof(ASCI_GRADIENT) - 1) * Brightness)];
 }
 
 struct ASCI_Texture

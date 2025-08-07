@@ -1,6 +1,7 @@
 #pragma once
 #include <math.h>
 #include <iostream>
+#include <float.h>
 
 #define PI 3.14159265358979323846f
 //VECTOR 2

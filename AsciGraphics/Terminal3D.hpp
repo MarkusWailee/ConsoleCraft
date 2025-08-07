@@ -1,5 +1,6 @@
 #pragma once
 #include <iostream>
+#include <cstring>
 #include "ASCI_Texture.hpp"
 #include "DeltaTime.hpp"
 #include "Math/mat.h"
