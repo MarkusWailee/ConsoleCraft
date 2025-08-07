@@ -3,14 +3,15 @@ This is a Minecraft clone running entirely in the command prompt with no librari
 ![](https://github.com/MarkusWailee/ConsoleCraft/assets/151405696/9a14bf86-df5b-4959-aa57-348acdfa4e63)
 ![](https://github.com/MarkusWailee/ConsoleCraft/assets/151405696/5b3ef366-6209-4905-886a-2b76d0ed3ee5)
 ## Features
-- Block placing
-- infinite world WARNING(floating point errors at far distances. Noticeable with the movement).
+- Block placing using the DDA algorithm
+- infinite world (floating point errors at far distances. Noticeable with the movement).
 - AABB colisions
 - Day/Night cycle
 ## 3D Renderer features
 - Back face culling
 - Triangle rasterization with uv coordinates
 - Perspective correct texture mapping
+- Basic labertian lighting
 
 ## Controls
 - W A S D for movement
@@ -20,5 +21,9 @@ This is a Minecraft clone running entirely in the command prompt with no librari
 - X to disable flying
 - Hold G for cycling day/night cycle
 ## Build
-- Make sure Texture folder is in the same directory as the game.exe
-```g++ -O3 main.cpp -o game```
+
+1. Make sure the `Texture` folder is in the same directory as the compiled `game.exe`.
+2. Compile the program with:
+
+```bash
+g++ -O3 main.cpp -o game
