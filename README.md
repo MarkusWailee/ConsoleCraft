@@ -19,6 +19,6 @@ This is a Minecraft clone running entirely in the command prompt with no librari
 - F to enable flying
 - X to disable flying
 - Hold G for cycling day/night cycle
-## Note
-- Change file name to "src" when cloning.
-- Make sure to update to the latest version of the windows terminal.
+## Build
+- Make sure Texture folder is in the same directory as the game.exe
+```g++ -O3 main.cpp -o game```
