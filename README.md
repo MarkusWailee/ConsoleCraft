@@ -1,5 +1,5 @@
 # ASCI Minecraft clone
-This is a Minecraft clone running entirely in the command prompt with no libraries for windows.
+This is a Minecraft clone running in the command prompt for windows.
 ![](https://github.com/MarkusWailee/ConsoleCraft/assets/151405696/9a14bf86-df5b-4959-aa57-348acdfa4e63)
 ![](https://github.com/MarkusWailee/ConsoleCraft/assets/151405696/5b3ef366-6209-4905-886a-2b76d0ed3ee5)
 ## Features
